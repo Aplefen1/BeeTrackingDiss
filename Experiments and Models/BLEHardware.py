@@ -4,7 +4,7 @@ import numpy as np
 from Gain import getgain
 
 class Transmitter:
-    def __init__(self,position,ant_type='omni',power=10, col='k'): #dBm
+    def __init__(self,position,ant_type='yagi',power=10, col='k'): #dBm
         self.position = np.array(position)
         self.ant_type = ant_type
         self.power = power
@@ -15,7 +15,6 @@ class Transmitter:
 
     def plot(self):
         plt.plot(self.position[0],self.position[1],'xb')
-        arrowsize = 50
         #plt.plot([self.position[0],self.position[0]+np.cos(self.direction)*arrowsize],[self.position[1],self.position[1]+np.sin(self.direction)*arrowsize],'-b')
 
     def plotsignal(self):
@@ -38,7 +37,11 @@ class Transmitter:
         #for ang in angs:
         x = self.position[0]
         y = self.position[1]
-        plt.plot([x,x+np.cos(ang)*10000],[y,y+np.sin(ang)*10000],'-'+self.color,alpha=0.5,lw=1)
+        plt.plot([x,x+np.cos(ang)*10000],[y,y+np.sin(ang)*10000],':'+self.color,alpha=0.5,lw=1)
+
+    def plotcircle(self,bee):
+        x = self.position[0]
+        y = self.position[1]
 
     def getgain(self,angle):
         if self.ant_type=='yagi':
@@ -55,10 +58,15 @@ class Receiver:
         self.velocity = np.array(velocity)
         self.gain = -10
         self.record = {}
+        self.omni_record = {}
 
     def add_record(self,transmitter_id,signal,time,angle):
         if transmitter_id not in self.record: self.record[transmitter_id] = []
         self.record[transmitter_id].append([time,signal,angle])
+
+    def add_omni_record(self,time,x,y,r):
+        if time not in self.omni_record: self.omni_record[time] = []
+        self.omni_record[time].append((x,y,r))
         
     def plot(self):
         plt.plot(self.position[0],self.position[1],'og')
