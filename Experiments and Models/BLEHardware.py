@@ -74,7 +74,7 @@ class Receiver:
     def settime(self,t):
         #self.position = (self.startposition + t*self.velocity)
         a = -2*np.pi*t/400
-        self.position = np.array([1500+1300*np.cos(a),1800+1300*np.sin(a)]) #(self.startposition + t*self.velocity)
+        self.position = np.array([1500+200*np.cos(a),1800+200*np.sin(a)]) #(self.startposition + t*self.velocity)
 
     def compute_signal(self,transmitter):
         delta = self.position - transmitter.position
@@ -86,4 +86,4 @@ class Receiver:
         #print(transmitter.getgain(np.array([ang])))
         lamb = 0.125 #m (wavelength)
         #transmitter gain + transmitter power + pathloss + reciever gain(assumed to be quite poor: -10)
-        return transmitter.getgain(np.array([ang]))+transmitter.power+20*np.log10(lamb/(4*np.pi*dist))+self.gain
+        return transmitter.getgain(np.array([ang])) + transmitter.power - (20*np.log10(dist)+40.05-self.gain)

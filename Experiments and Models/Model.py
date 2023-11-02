@@ -38,8 +38,10 @@ class Model():
                 ry = r.position[1]
                 tx = t.position[0]
                 ty = t.position[1]
+                transmitter_msg = str(np.floor(s)) + "dbm"
+                plt.text(tx,ty,transmitter_msg)
                 
-                if t.ant_type == "yagi" and s>-94:
+                if t.ant_type == "yagi":
                     #if s=-94 --> lw=1, a=0.
                     #if s=-84 --> lw=2, a=0.5,
                     #a = (s[0]+94)/20.0
@@ -49,12 +51,13 @@ class Model():
                     plt.plot([rx,tx],[ry,ty],lw=1+(s+94)/10,alpha=a)
                     r.add_record(i,s,time,t.direction)
 
+                """
                 if (time%20 == 0):
                     norm = np.linalg.norm(r.position - t.position)
                     circle = plt.Circle((tx,ty), norm, fill=False)
                     ax.add_patch(circle)
                     r.add_omni_record(time,tx,ty,norm)
-            
+
             if (time%20 == 0):
                 c1 = r.omni_record[time][0]
                 c2 = r.omni_record[time][1]
@@ -62,10 +65,9 @@ class Model():
                 x,y = self.intersection_three_signals(c1,c2,c3)
                 fly_point = plt.Circle((1000,1000), 50)
                 self.circles.append(fly_point)
-            
-        for c in self.circles:
-            ax.add_patch(c)
+            """
 
+            
 
     def intersection_three_signals(self,s1,s2,s3): #(x,y,r(signal strength))
         (x1,y1,r1) = s1
@@ -100,7 +102,14 @@ class Model():
             
             #print(np.max(sig))
         plt.plot([200,2800],[100,100],'k-')
-        
+
+    def interactivePlot(self):
+        plt.ion()
+        fig, ax = plt.subplots()
+        for t in self.transmitters:
+            t.plot()
+        plt.show()
+    
 
     def plotframe(self,i,ax=None):
         """
