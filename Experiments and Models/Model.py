@@ -1,4 +1,4 @@
-from BLEHardware import Transmitter, Receiver
+from BLEHardware import Transmitter, Receiver, BLEReciever, Antenna
 from Gain import getgain
 import matplotlib.pyplot as plt
 import numpy as np
@@ -148,3 +148,36 @@ class Model():
         else:
             return animation.ipython_display(fps = 20, loop = False, autoplay = True)
         
+
+class NewModel:
+    def __init__(self, noiseFloor) -> None:
+        self.transmitters = [Antenna(7,0,14)]
+        self.receiver = BLEReciever((100,100))
+        self.noise_floor = noiseFloor
+        
+    def signalRecieved(self, transmitter : Antenna):
+        delta = self.receiver.position - transmitter.position
+
+        theta = np.arctan2(delta[1],delta[0])
+        dist = np.linalg.norm(delta)
+
+        baseGain = transmitter.baseGain(theta)
+        actualGain = self.FSPL(baseGain, dist)
+        signal_and_noise = self.noiser(actualGain)
+        
+        if signal_and_noise > self.receiver.sensitivity:
+            self.receiver.signalRecieved(theta, signal_and_noise)
+
+    def FSPL(self, baseGain, dist):
+        return baseGain - (20*np.log10(dist)+40.05-(self.receiver.gain))
+    
+    def rudimentaryNoise(g):
+        noise = np.vectorize(noiser)(g)
+        return noise
+
+    def noiser(self,gi):
+        rnd = np.random.default_rng()
+        if (gi - self.noise_floor) > 0:
+            return gi
+        else:
+            return gi + (rnd.random() * (self.noise_floor - gi))

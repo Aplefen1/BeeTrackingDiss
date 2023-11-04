@@ -87,3 +87,29 @@ class Receiver:
         lamb = 0.125 #m (wavelength)
         #transmitter gain + transmitter power + pathloss + reciever gain(assumed to be quite poor: -10)
         return transmitter.getgain(np.array([ang])) + transmitter.power - (20*np.log10(dist)+40.05-self.gain)
+    
+
+class Antenna:
+    def __init__(self, falloff, direction, max_gain, power) -> None:
+        self.falloff = falloff
+        self.direction = direction
+        self.max_gain = max_gain
+        self.power = power
+        self.position = (0,0)
+
+    def baseGain(self, theta):
+        g = (self.max_gain+25) * np.power(np.cos(theta + self.direction),self.falloff)
+        return (g-25) + self.power
+    
+
+class BLEReciever:
+    def __init__(self,startposition) -> None:
+        self.position = startposition
+        self.gain = -3 #from data sheet
+        self.sensitivity = -94 #from ds
+        self.recordedSignals = []
+        self.recordedAngles = []
+
+    def signalRecieved(self,theta,signal):
+        self.recordedSignals.append(signal)
+        self.recordedAngles.append(theta)
