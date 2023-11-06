@@ -90,16 +90,29 @@ class Receiver:
     
 
 class Antenna:
-    def __init__(self, falloff, direction, max_gain, power) -> None:
+    def __init__(self, falloff, direction, max_gain, power, pos) -> None:
         self.falloff = falloff
         self.direction = direction
         self.max_gain = max_gain
         self.power = power
-        self.position = (0,0)
+        self.position = pos
 
-    def baseGain(self, theta):
-        g = (self.max_gain+25) * np.power(np.cos(theta + self.direction),self.falloff)
+    def baseGain(self, theta, rot):
+        g = (self.max_gain+25) * np.power(np.cos(theta + self.direction + rot),self.falloff)
         return (g-25) + self.power
+    
+    def polarPlot(self,ax,rot):
+        theta = np.arange(-(np.pi/2),np.pi/2,0.01)[1:]
+        ax.plot(theta,self.baseGain(theta, 0))
+    
+    def plot(self,ax,rot):
+        theta = np.arange(-(np.pi/2),np.pi/2,0.01)[1:]
+
+        x = self.position[0]
+        y = self.position[1]
+
+        g = self.baseGain(theta, 0)
+        ax.plot(x+np.cos(theta)*g,y+np.sin(theta)*g,alpha=1,lw=3)
     
 
 class BLEReciever:
@@ -113,3 +126,26 @@ class BLEReciever:
     def signalRecieved(self,theta,signal):
         self.recordedSignals.append(signal)
         self.recordedAngles.append(theta)
+
+    def plotSignals(self,ax):
+        ax.plot(self.recordedAngles,self.recordedSignals)
+
+
+class NewTransmitter:
+    def __init__(self,pos,vel) -> None:
+        self.position = pos
+        self.direction = 1.8
+        self.transmitters = []
+        self.angular_vel = np.pi/2
+
+        for i in range(0,3):
+            dir = (-np.pi/8)+(i*np.pi/8)
+            self.transmitters.append(Antenna(5,dir,14,15,pos))
+
+    def plot(self,ax):
+        for ant in self.transmitters:
+            ant.polarPlot(ax,0)
+
+    def polarPlot(self,ax):
+        for ant in self.transmitters:
+            ant.polarPlot(ax,0)

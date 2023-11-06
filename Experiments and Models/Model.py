@@ -1,7 +1,13 @@
-from BLEHardware import Transmitter, Receiver, BLEReciever, Antenna
+from BLEHardware import Transmitter, Receiver, BLEReciever, Antenna, NewTransmitter
 from Gain import getgain
+
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Button, Slider
+
 import numpy as np
+
+from moviepy.editor import VideoClip
+from moviepy.video.io.bindings import mplfig_to_npimage
 
 class Model():
     def __init__(self,ant_type,sensorgridx,sensorgridy):
@@ -151,9 +157,10 @@ class Model():
 
 class NewModel:
     def __init__(self, noiseFloor) -> None:
-        self.transmitters = [Antenna(7,0,14)]
+        self.transmitters = [NewTransmitter((0,0),0)]
         self.receiver = BLEReciever((100,100))
         self.noise_floor = noiseFloor
+        self.time = 0
         
     def signalRecieved(self, transmitter : Antenna):
         delta = self.receiver.position - transmitter.position
@@ -171,13 +178,22 @@ class NewModel:
     def FSPL(self, baseGain, dist):
         return baseGain - (20*np.log10(dist)+40.05-(self.receiver.gain))
     
-    def rudimentaryNoise(g):
-        noise = np.vectorize(noiser)(g)
-        return noise
-
     def noiser(self,gi):
         rnd = np.random.default_rng()
         if (gi - self.noise_floor) > 0:
             return gi
         else:
             return gi + (rnd.random() * (self.noise_floor - gi))
+    
+    def rudimentaryNoise(self,g):
+        noise = np.vectorize(self.noiser)(g)
+        return noise
+    
+    def plotTransmitters(self):
+        fig, ax = plt.subplots(subplot_kw=dict(polar=True))
+        for tran in self.transmitters:
+            tran.plot(ax)
+
+    def plotRecievedSignal(self):
+        fig, ax = plt.subplots()
+        self.receiver.plot(ax)
