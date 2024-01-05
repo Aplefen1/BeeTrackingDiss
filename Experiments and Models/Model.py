@@ -162,18 +162,18 @@ class NewModel:
         self.noise_floor = noiseFloor
         self.time = 0
         
-    def signalRecieved(self, transmitter : Antenna):
+    def signalRecieved(self, transmitter : NewTransmitter):
         delta = self.receiver.position - transmitter.position
 
         theta = np.arctan2(delta[1],delta[0])
         dist = np.linalg.norm(delta)
 
-        baseGain = transmitter.baseGain(theta)
+        key, baseGain = transmitter.baseGain(theta)
         actualGain = self.FSPL(baseGain, dist)
         signal_and_noise = self.noiser(actualGain)
         
         if signal_and_noise > self.receiver.sensitivity:
-            self.receiver.signalRecieved(theta, signal_and_noise)
+            self.receiver.signalRecieved(key, theta, signal_and_noise)
 
     def FSPL(self, baseGain, dist):
         return baseGain - (20*np.log10(dist)+40.05-(self.receiver.gain))
@@ -196,4 +196,4 @@ class NewModel:
 
     def plotRecievedSignal(self):
         fig, ax = plt.subplots()
-        self.receiver.plot(ax)
+        self.receiver.plotSignals(ax)
