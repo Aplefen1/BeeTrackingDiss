@@ -1,4 +1,4 @@
-from BLEHardware import Transmitter, Receiver, BLEReciever, Antenna, NewTransmitter
+from BLEHardware import Transmitter, Receiver, BLEReciever, Antenna, Array
 from Gain import getgain
 
 import matplotlib.pyplot as plt
@@ -13,23 +13,23 @@ class Model():
     def __init__(self,ant_type,sensorgridx,sensorgridy):
         colors = ['b','g','y','k']
         self.circles = []
-        self.transmitters = []
+        self.array = []
         i = 0
         for x in sensorgridx:
             for y in sensorgridy:
-                self.transmitters.append(Transmitter([x,y],ant_type=ant_type,col=colors[i%4]))
+                self.array.append(Transmitter([x,y],ant_type=ant_type,col=colors[i%4]))
                 i+=1
 
         self.receivers = []
         self.receivers.append(Receiver([50,50],[5,3]))
         for r in self.receivers:
             r.settime(0)
-        for t in self.transmitters:
+        for t in self.array:
             t.settime(0)
         
 
     def plotMap(self,time,ax):
-        for t in self.transmitters:
+        for t in self.array:
             t.settime(time)
             t.plot()
             t.plotsignal()
@@ -38,7 +38,7 @@ class Model():
             r.settime(time)
             r.plot()
 
-            for i,t in enumerate(self.transmitters):
+            for i,t in enumerate(self.array):
                 s = r.compute_signal(t)
                 rx = r.position[0]
                 ry = r.position[1]
@@ -95,7 +95,7 @@ class Model():
             peak_idxs = np.where(peaks)[0]+10
             if len(peak_idxs)>0:
                 for r_peak in r[peak_idxs,:]:
-                    self.transmitters[i].plotvector(r_peak[2])
+                    self.array[i].plotvector(r_peak[2])
 
             if len(r)<1: continue
 
@@ -104,7 +104,7 @@ class Model():
             #plt.plot(r[sig>thresh,0]*20+20,sig[sig>thresh]+20,'-x')
             thresh = -110
             keep = r[:,1]>=thresh
-            plt.plot(r[:,0]*10+200,100+(r[:,1]-thresh)*10,'-'+self.transmitters[i].color)
+            plt.plot(r[:,0]*10+200,100+(r[:,1]-thresh)*10,'-'+self.array[i].color)
             
             #print(np.max(sig))
         plt.plot([200,2800],[100,100],'k-')
@@ -112,7 +112,7 @@ class Model():
     def interactivePlot(self):
         plt.ion()
         fig, ax = plt.subplots()
-        for t in self.transmitters:
+        for t in self.array:
             t.plot()
         plt.show()
     
@@ -157,12 +157,12 @@ class Model():
 
 class NewModel:
     def __init__(self, noiseFloor) -> None:
-        self.transmitters = [NewTransmitter((0,0),0)]
+        self.array = [Array((0,0),0,1)]
         self.receiver = BLEReciever((100,100))
         self.noise_floor = noiseFloor
         self.time = 0
         
-    def signalRecieved(self, transmitter : NewTransmitter):
+    def signalRecieved(self, transmitter : Array):
         delta = self.receiver.position - transmitter.position
 
         theta = np.arctan2(delta[1],delta[0])
@@ -189,11 +189,18 @@ class NewModel:
         noise = np.vectorize(self.noiser)(g)
         return noise
     
-    def plotTransmitters(self):
+    def plotarray(self):
         fig, ax = plt.subplots(subplot_kw=dict(polar=True))
-        for tran in self.transmitters:
+        for tran in self.array:
             tran.plot(ax)
 
     def plotRecievedSignal(self):
         fig, ax = plt.subplots()
         self.receiver.plotSignals(ax)
+
+    def plotIdealMono(self,width):
+        fig, ax = plt.subplots()
+        monos = self.array[0].idealMonoFunction(width)
+        for (key, theta, mono) in monos:
+            line, = ax.plot(theta,mono)
+            line.set_label("awoga")

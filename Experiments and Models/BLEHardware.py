@@ -105,6 +105,7 @@ class Antenna:
         deg = []
         magdB = []
         zeroVal = 0
+
         for i in range(0, len(mat_dict['theta'][0])):
             if mat_dict['theta'][0][i] == 0: zeroVal = mat_dict['magdB'][i][0]
             if mat_dict['theta'][0][i] < 0: 
@@ -114,27 +115,30 @@ class Antenna:
                 theta.append(np.deg2rad(mat_dict['theta'][0][i]))
                 deg.append(mat_dict['theta'][0][i])
             magdB.append(mat_dict['magdB'][i][0])
+
         theta.append(np.pi*2)
         magdB.append(zeroVal)
         deg.append(360)
         self.df = pd.DataFrame()
+
         self.df["deg"] = deg
         self.df["theta"] = theta
         self.df["magdB"] = magdB
 
         self.df = self.df.sort_values("deg")
 
-    def baseGain(self, theta, rot):
-        theta = (theta + rot) % np.pi*2
-        nt = self.df.iloc(self.df["theta"]-theta).abs().argsort()[:2]
-        gain = nt['magdB'].toList()[0]
-        return theta, (gain + self.power)
+        self.gain = self.df["magdB"]
+        self.gain = np.roll(self.gain, (self.direction))
+
+    def baseGain(self, deg):
+        gain = self.gain[deg] + self.power
+        theta = np.deg2rad(deg)
+        return theta, gain
     
     def polarPlot(self,ax,rot):
-        ax.plot(self.df['theta'] + self.direction, self.df['magdB'])
+        ax.plot(self.df['theta'] + np.deg2rad(self.direction), self.df['magdB'])
     
     def plot(self,ax,rot):
-
         x = self.position[0]
         y = self.position[1]
         ax.plot(x+np.cos(self.df["theta"])*self.df["magdB"],y+np.sin(self.df["theta"])*self.df["magdB"],alpha=1,lw=3)
@@ -145,25 +149,13 @@ class BLEReciever:
         self.position = startposition
         self.gain = -3 #from data sheet
         self.sensitivity = -94 #from ds
-        self.recordedSignals = pd.DataFrame()
-        self.recordedSignals['antID'] = []
-        self.recordedSignals['theta'] = []
-        self.recordedSignals['RSSI'] = []
 
-    def signalRecieved(self,antID,theta,RSSI):
-        if antID not in self.recordedSignals['antID']:
-            self.recordedSignals['antID'].append(antID)
-            self.recordedSignals['theta'].append([])
-            self.recordedSignals['RSSI'].append([])
-        self.recordedSignals.loc(antID)['theta']
-        self.recordedSignals.append(signal)
-        self.recordedAngles.append(theta)
+    #(antennaID, time, RSSI)
 
     def plotSignals(self,ax):
         ax.plot(self.recordedAngles,self.recordedSignals)
 
-
-class NewTransmitter:
+class Array:
     def __init__(self,pos,vel,id) -> None:
         self.position = pos
         self.direction = 0
@@ -172,7 +164,7 @@ class NewTransmitter:
         self.id = id
 
         for i in range(0,3):
-            dir = (-np.pi/8)+(i*np.pi/8) + self.direction
+            dir = (-10)+(i*10) + self.direction
             self.antennas.append(Antenna(dir,14,pos,self.id,i))
 
     def plot(self,ax):
@@ -182,3 +174,21 @@ class NewTransmitter:
     def polarPlot(self,ax):
         for ant in self.antennas:
             ant.polarPlot(ax,np.pi)
+
+    def idealMonoFunction(self, beam_width) -> [(str, [float], [float])]: #return beam width degrees to monopulse function
+        half_beam = int(np.floor(beam_width/2))
+        angles = [v for v in range((-half_beam),(half_beam))]
+        indexes = [v for v in range(360-half_beam,360)] + [v for v in range(0,half_beam)]
+        monoFunctions = []
+        #A/B, A/C, B/C
+        for i in range(0,len(self.antennas)-1):
+            for j in range(i+1,len(self.antennas)):
+                aTheta, aGain = self.antennas[i].baseGain(indexes)
+                bTheta, bGain = self.antennas[j].baseGain(indexes)
+                key = self.antennas[i].id + "," + self.antennas[j].id
+                sum = aGain + bGain
+                diff = aGain - bGain
+                mono = diff / sum
+                monoFunctions.append((key,angles,mono))
+        
+        return monoFunctions
