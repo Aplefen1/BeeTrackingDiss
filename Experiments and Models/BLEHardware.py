@@ -135,8 +135,12 @@ class Antenna:
         theta = np.deg2rad(deg)
         return theta, gain
     
+    def modelGain(self, deg):
+        gain = self.gain[deg] + self.power
+        return gain
+    
     def polarPlot(self,ax,rot):
-        ax.plot(self.df['theta'] + np.deg2rad(self.direction), self.df['magdB'])
+        ax.plot(self.df['theta'] + np.deg2rad(self.direction), self.df['magdB'] + self.power, label=self.id)
     
     def plot(self,ax,rot):
         x = self.position[0]
@@ -147,25 +151,39 @@ class Antenna:
 class BLEReciever:
     def __init__(self,startposition) -> None:
         self.position = startposition
+        self.posX = startposition[0]
+        self.posY = startposition[1]
         self.gain = -3 #from data sheet
         self.sensitivity = -94 #from ds
+        self.signal = {}
 
     #(antennaID, time, RSSI)
+
+    def addSignal(self, signal):
+        self.signal = signal
+        print("Receiver has revieved signal: ")
+        print(signal)
 
     def plotSignals(self,ax):
         ax.plot(self.recordedAngles,self.recordedSignals)
 
+#signal package class, RSSIs from an array at a time
+
 class Array:
-    def __init__(self,pos,vel,id) -> None:
+    def __init__(self,pos,vel,id,ants) -> None:
         self.position = pos
+        self.posX = pos[0]
+        self.posY = pos[1]
         self.direction = 0
-        self.antennas = []
+        self.antennas = ants
         self.angular_vel = np.pi/2
         self.id = id
 
+        '''
         for i in range(0,3):
             dir = (-10)+(i*10) + self.direction
             self.antennas.append(Antenna(dir,14,pos,self.id,i))
+        '''
 
     def plot(self,ax):
         for ant in self.antennas:
@@ -181,6 +199,7 @@ class Array:
         indexes = [v for v in range(360-half_beam,360)] + [v for v in range(0,half_beam)]
         monoFunctions = []
         #A/B, A/C, B/C
+        #antB is taken from antA
         for i in range(0,len(self.antennas)-1):
             for j in range(i+1,len(self.antennas)):
                 aTheta, aGain = self.antennas[i].baseGain(indexes)
@@ -189,6 +208,14 @@ class Array:
                 sum = aGain + bGain
                 diff = aGain - bGain
                 mono = diff / sum
-                monoFunctions.append((key,angles,mono))
+                #                       antA            antB            Label theta function
+                monoFunctions.append((self.antennas[i].id,self.antennas[j].id,key,np.array(angles),np.array(mono)))
         
         return monoFunctions
+    
+    def baseGain(self,theta):
+        a1 = self.antennas[0].modelGain(theta)
+        a2 = self.antennas[1].modelGain(theta)
+        a3 = self.antennas[2].modelGain(theta)
+
+        return (self.antennas[0], a1), (self.antennas[1], a2), (self.antennas[2], a3)

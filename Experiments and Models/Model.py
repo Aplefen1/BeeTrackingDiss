@@ -156,11 +156,22 @@ class Model():
         
 
 class NewModel:
-    def __init__(self, noiseFloor) -> None:
-        self.array = [Array((0,0),0,1)]
-        self.receiver = BLEReciever((100,100))
+    def __init__(self, noiseFloor,forced_array=None) -> None:
+        if forced_array == None:
+            self.array = [Array([0,0],0,1,None)]
+        else:
+            self.array = forced_array
+        self.receiver = BLEReciever(self.randomPosition(20))
         self.noise_floor = noiseFloor
         self.time = 0
+
+    def randomPosition(self, beamwidth):
+        theta = np.random.random_integers(np.floor(-beamwidth/2),np.floor(beamwidth/2))
+        distance = np.random.randint(15,500)
+        x = np.cos(np.deg2rad(theta)) * distance
+        y = np.sin(np.deg2rad(theta)) * distance
+        self.test_angle = theta
+        return np.array([x,y])
         
     def signalRecieved(self, transmitter : Array):
         delta = self.receiver.position - transmitter.position
@@ -168,12 +179,12 @@ class NewModel:
         theta = np.arctan2(delta[1],delta[0])
         dist = np.linalg.norm(delta)
 
-        key, baseGain = transmitter.baseGain(theta)
-        actualGain = self.FSPL(baseGain, dist)
-        signal_and_noise = self.noiser(actualGain)
-        
-        if signal_and_noise > self.receiver.sensitivity:
-            self.receiver.signalRecieved(key, theta, signal_and_noise)
+        (ant1, s1), (ant2, s2), (ant3, s3) = transmitter.baseGain(int(np.rad2deg(theta)))
+        actualGain1 = s1#self.FSPL(s1, dist)
+        actualGain2 = s2#self.FSPL(s2, dist)
+        actualGain3 = s3#self.FSPL(s3, dist)
+
+        self.receiver.addSignal({ant1.id : actualGain1, ant2.id : actualGain2, ant3.id : actualGain3})
 
     def FSPL(self, baseGain, dist):
         return baseGain - (20*np.log10(dist)+40.05-(self.receiver.gain))
@@ -193,6 +204,7 @@ class NewModel:
         fig, ax = plt.subplots(subplot_kw=dict(polar=True))
         for tran in self.array:
             tran.plot(ax)
+        ax.legend()
 
     def plotRecievedSignal(self):
         fig, ax = plt.subplots()
@@ -201,6 +213,55 @@ class NewModel:
     def plotIdealMono(self,width):
         fig, ax = plt.subplots()
         monos = self.array[0].idealMonoFunction(width)
-        for (key, theta, mono) in monos:
-            line, = ax.plot(theta,mono)
-            line.set_label("awoga")
+        (antA1, antB1, key1, theta1, mono1) = monos[0]
+        ax.plot(theta1, mono1, label=key1)
+        (andA2, antB2, key2, theta2, mono2) = monos[2]
+        ax.plot(theta2, mono2, label=key2)   
+        ax.legend()
+
+    def estimateAngle(self, arr : Array) -> [float]: #{ant1 : RSSI1, ant2 : RSSI2, ant3 : RSSI3} - for simplicity at the moment
+        signals = self.receiver.signal
+        mono12 = self.monoFuntion(signals[arr.antennas[0].id],signals[arr.antennas[1].id])
+        print(mono12)
+        mono13 = self.monoFuntion(signals[arr.antennas[0].id],signals[arr.antennas[2].id])
+        print(mono13)
+        mono23 = self.monoFuntion(signals[arr.antennas[1].id],signals[arr.antennas[2].id])
+        print(mono23)
+
+        arrayModel = arr.idealMonoFunction(20) #20 degrees either side
+        print(arrayModel)
+
+        theta12 = []
+        theta13 = []
+        theta23 = []
+        for (anta,antb,key,theta,mono) in arrayModel:
+            if anta == arr.antennas[0].id  and antb == arr.antennas[1].id:
+                theta12 = self.anglesWithMono(theta,mono,mono12)
+            elif anta  == arr.antennas[0].id and antb == arr.antennas[2].id:
+                theta13 = self.anglesWithMono(theta,mono,mono13)
+            elif anta == arr.antennas[1].id  and antb == arr.antennas[2].id:
+                theta23 = self.anglesWithMono(theta,mono,mono23)
+
+        print("Possible angles:")
+        print(theta12,theta13,theta23)
+
+    def plotArrReciever(self):
+        fig, ax = plt.subplots()
+        ax.plot(self.array[0].posX, self.array[0].posY, 'x')
+        ax.plot(self.receiver.posX, self.receiver.posY, 'o')
+        print("angle to test:")
+        print(self.test_angle)
+
+    def monoFuntion(self, signal1, signal2): #signal 2 is always taken from signal 1
+        sum = signal1 + signal2
+        diff = signal1 - signal2
+        return diff/sum
+    
+    def anglesWithMono(self,theta,modelMono,mono):
+        matches = modelMono == mono
+        return theta[matches]
+    
+    def runTest(self):
+        self.signalRecieved(self.array[0])
+        print("Estimating angle using received signal")
+        self.estimateAngle(self.array[0])
