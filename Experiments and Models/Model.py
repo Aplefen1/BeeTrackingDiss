@@ -161,7 +161,7 @@ class NewModel:
             self.array = [Array([0,0],0,1,None)]
         else:
             self.array = forced_array
-        self.receiver = BLEReciever(self.randomPosition(20))
+        self.receiver = BLEReciever(self.randomPosition(28))
         self.noise_floor = noiseFloor
         self.time = 0
 
@@ -228,7 +228,7 @@ class NewModel:
         mono23 = self.monoFuntion(signals[arr.antennas[1].id],signals[arr.antennas[2].id])
         print(mono23)
 
-        arrayModel = arr.idealMonoFunction(20) #20 degrees either side
+        arrayModel = arr.idealMonoFunction(40) #20 degrees either side
         print(arrayModel)
 
         theta12 = []
