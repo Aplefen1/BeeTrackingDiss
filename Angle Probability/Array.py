@@ -7,8 +7,8 @@ class Array:
         self.position = np.array(pos)
         self.rotation = rotation
 
-        ant_vector = np.array([0,0.2])
-        ant_rot = np.pi/14
+        ant_vector = np.array([0,0.1])
+        ant_rot = np.pi/10
         self.ant_right = Antenna(self.position - ant_vector, self.rotation + (2*np.pi - ant_rot), 30, 'AR') # 20 cm to right and roated 15 degrees clockwise
         self.ant_middle = Antenna(self.position, self.rotation, 30, 'AM') # Position and rotation of Array
         self.ant_left = Antenna(self.position + ant_vector, self.rotation + ant_rot, 30, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
@@ -35,8 +35,7 @@ class Array:
     ########## Visualisations ##############
 
     def polar_plot(self):
-        fig = plt.figure()
-        ax = plt.subplot()
+        ax = plt.subplot(projection="polar")
         
         self.ant_left.polar_plot(ax, 'b')
         self.ant_middle.polar_plot(ax, 'g')
