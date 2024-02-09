@@ -1,4 +1,5 @@
 from Antenna import Antenna
+from MonoPattern import MonoPattern
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,6 +15,10 @@ class Array:
         self.ant_left = Antenna(self.position + ant_vector, self.rotation + ant_rot, 30, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
 
         self.ant_lookup = {'AL' : self.ant_left, 'AM' : self.ant_middle, 'AR' : self.ant_right}
+        
+        self.AL_AM_model = self.create_mono_model("AL","AM")
+        self.AL_AR_model = self.create_mono_model("AL","AR")
+        self.AM_AR_model = self.create_mono_model("AM","AR")
         
     ######### Ideal Mono Pulse Function ####
         
@@ -31,6 +36,15 @@ class Array:
         mono = diff / sum
         
         return diff
+    
+    def create_mono_model(self, antA_ID, antB_ID):
+        antA = self.ant_lookup[antA_ID]
+        antB = self.ant_lookup[antB_ID]
+        theta = np.linspace(-np.pi/10,np.pi/10,5000)
+        mono = self.ideal_mono(antA,antB,theta)
+        
+        monoModel = MonoPattern(theta,mono)
+        return monoModel
 
     ########## Visualisations ##############
 
@@ -56,4 +70,16 @@ class Array:
         fig = plt.figure()
         ax = plt.subplot()
         ax.plot(theta,mono_func)
+        
+    def plot_all_mono_pairs(self, low, high):
+        theta = np.linspace(low,high,1000)
+        AL_AM_mono = self.ideal_from_ID("AL","AM",theta)
+        AL_AR_mono = self.ideal_from_ID("AL", "AR", theta)
+        AM_AR_mono = self.ideal_from_ID("AM", "AR", theta)
+        
+        ax = plt.subplot()
+        ax.plot(theta,AL_AM_mono, label="AL - AM")
+        ax.plot(theta,AL_AR_mono, label="AL - AR")
+        ax.plot(theta,AM_AR_mono, label="AM - AR")
+        ax.legend()
         

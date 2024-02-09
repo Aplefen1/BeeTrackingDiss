@@ -8,12 +8,31 @@ import matplotlib.pyplot as plt
 class Model:
     def __init__(self, reciever_angle, reciever_distance) -> None:
         self.array = Array([0,0],0)
+        self.receiver_angle = reciever_angle
+        self.reciever_distance = reciever_distance
         x = reciever_distance * np.cos(reciever_angle)
         y = reciever_distance * np.sin(reciever_angle)
         self.receiver = Receiver([x,y],-3)
  
     ####### Mono Pulse Estimation #####
         
+    def test_estimation(self):
+        L, M, R = self.recieved_signals()
+        L_M = L - M
+        M_R = M - R
+        L_R = L - R
+        
+        angles1 = self.array.AL_AM_model.angles_from_mono_multi(L_M)
+        angles2 = self.array.AM_AR_model.angles_from_mono_multi(M_R)
+        angles3 = self.array.AL_AR_model.angles_from_mono_multi(L_R)
+        
+        fig = plt.figure()
+        ax = plt.subplot()
+        ax.set_title(str(self.receiver_angle)+"rad at "+str(self.reciever_distance) + "m")
+        ax.hist(angles1, bins=100, alpha=0.5, label='AL-AM')
+        ax.hist(angles2, bins=100, alpha=0.5, label='AM-AR')
+        ax.hist(angles3, bins=100, alpha=0.3, label="AL-AR")
+        ax.legend(loc='upper right')
 
     ######## Signal modelling #########
         
@@ -22,7 +41,6 @@ class Model:
         thetaL = np.arctan2(deltaL[1],deltaL[0])
         thetaAL = np.empty(1000)
         thetaAL.fill(thetaL)
-        print(thetaAL)
         distL = np.linalg.norm(deltaL)
         
         deltaM = self.receiver.position - self.array.ant_middle.position
@@ -92,3 +110,6 @@ class Model:
         plt.hist(M, bins = 200, color='g') 
         plt.hist(R, bins = 200, color='r')
         plt.show()
+        
+    def plot_all_mono_pairs(self,low,high):
+        self.array.plot_all_mono_pairs(low,high)

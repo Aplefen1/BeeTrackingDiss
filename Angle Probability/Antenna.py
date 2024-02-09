@@ -99,5 +99,4 @@ class Antenna:
         ax.plot(theta,gain, col, label=self.id)
         
     def spatial_plot(self, ax, col):
-        print(self.position)
         ax.plot(self.position[0],self.position[1],'x'+col, label=self.id)
