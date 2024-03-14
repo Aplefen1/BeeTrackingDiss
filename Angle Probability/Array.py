@@ -4,12 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Array:
-    def __init__(self, pos, rotation) -> None:
+    def __init__(self, pos, rotation, array_separation) -> None:
         self.position = np.array(pos)
         self.rotation = rotation
 
         ant_vector = np.array([0,0.1])
-        ant_rot = np.pi/10
+        ant_rot = array_separation
         self.ant_right = Antenna(self.position - ant_vector, self.rotation + (2*np.pi - ant_rot), 30, 'AR') # 20 cm to right and roated 15 degrees clockwise
         self.ant_middle = Antenna(self.position, self.rotation, 30, 'AM') # Position and rotation of Array
         self.ant_left = Antenna(self.position + ant_vector, self.rotation + ant_rot, 30, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
@@ -19,6 +19,17 @@ class Array:
         self.AL_AM_model = self.create_mono_model("AL","AM")
         self.AL_AR_model = self.create_mono_model("AL","AR")
         self.AM_AR_model = self.create_mono_model("AM","AR")
+        
+    def get_gain(self, theta) -> np.ndarray:
+        AL = self.ant_left.get_gain(theta)
+        AM = self.ant_middle.get_gain(theta)
+        AR = self.ant_right.get_gain(theta)
+        
+        return np.array([AL,AM,AR]).T
+    
+    def set_separation(self, separation):
+        self.ant_left.set_separation(separation)
+        self.ant_right.set_separation(-separation)
         
     ######### Ideal Mono Pulse Function ####
         
@@ -40,7 +51,7 @@ class Array:
     def create_mono_model(self, antA_ID, antB_ID):
         antA = self.ant_lookup[antA_ID]
         antB = self.ant_lookup[antB_ID]
-        theta = np.linspace(-np.pi/10,np.pi/10,5000)
+        theta = np.linspace(-np.pi/4,np.pi/4,5000)
         mono = self.ideal_mono(antA,antB,theta)
         
         monoModel = MonoPattern(theta,mono)
@@ -62,6 +73,26 @@ class Array:
         self.ant_left.spatial_plot(ax,'b')
         self.ant_middle.spatial_plot(ax,'g')
         self.ant_right.spatial_plot(ax,'r')
+        
+    def plot_against(self):
+        thetas = np.linspace(-np.pi/2,np.pi/2,1000)
+        a = self.ant_left.get_gain(thetas)
+        b = self.ant_middle.get_gain(thetas)
+        c = self.ant_right.get_gain(thetas)
+        
+        plt.figure()
+        ax = plt.subplot()
+        ax.plot(a,b)
+        ax.set_title("l/m")
+        plt.figure()
+        bx = plt.subplot()
+        bx.plot(b,c)
+        bx.set_title("m/r")
+        plt.figure()
+        cx = plt.subplot()
+        cx.plot(a,c)
+        cx.set_title("l/r")
+        
         
     def plot_ideal_mono_pair(self, low, high, ant1_id, ant2_id):
         theta = np.linspace(low,high,1000)

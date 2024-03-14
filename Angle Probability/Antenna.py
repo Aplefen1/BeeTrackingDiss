@@ -29,6 +29,9 @@ class Antenna:
     def get_gain(self, theta):
         return self.base_gain(self.relative_theta(theta))
     
+    def set_separation(self, separation):
+        self.rotation = separation
+    
     #change to positive angle from if where the antenna is pointing is the origin
     def relative_theta(self, theta):
         relative = theta - self.rotation
