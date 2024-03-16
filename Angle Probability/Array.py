@@ -59,14 +59,14 @@ class Array:
 
     ########## Visualisations ##############
 
-    def polar_plot(self):
-        ax = plt.subplot(projection="polar")
+    def polar_plot(self,ax):
+        #ax = plt.subplot(projection="polar")
         
         self.ant_left.polar_plot(ax, 'b')
         self.ant_middle.polar_plot(ax, 'g')
         self.ant_right.polar_plot(ax, 'r')
         
-        ax.legend()
+        #ax.legend()
         
     def spatial_plot(self, ax):
         

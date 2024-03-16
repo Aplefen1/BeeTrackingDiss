@@ -10,6 +10,7 @@ from scipy.stats import norm as norm
 
 class Model:
     def __init__(self, reciever_angle, reciever_distance, array_separation) -> None:
+        self.gauss_noise_add = 4
         self.array = Array([0,0],0, array_separation)
         self.receiver_angle = reciever_angle
         self.reciever_distance = reciever_distance
@@ -22,6 +23,9 @@ class Model:
         self.L_R = self.L - self.R
         self.noise_std = 1.5
         
+        self.search_ang = np.linspace(-np.pi,np.pi,100)
+        self.search_gain = self.array.get_gain(self.search_ang)
+        
     def set_reciver_angle(self, new_angle):
         self.receiver_angle = new_angle
         x = self.reciever_distance * np.cos(new_angle)
@@ -30,41 +34,43 @@ class Model:
         
     def set_antenna_separation(self, separation):
         self.array.set_separation(separation)
+        self.search_gain = self.array.get_gain(self.search_ang)
         
     ####### Vector Estimation #####
         
-    def estimate_angle(self):
+    def angle_analysis(self, p):
         
-        ps, *a = ps.calculations(-np.pi,np.pi)
+        ps, *a = self.ps_calculation()
+        probabilities = np.multiply(ps, self.search_ang[1]-self.search_ang[0])
         
-    def ps_calculation(self, high, low):
+        est_ang = np.random.choice(self.search_ang, p=probabilities)
+        
+        return np.abs(np.subtract(self.receiver_angle,est_ang)) #error
+        
+    def ps_calculation(self):
+        import timeit
         recieved_strengths = self.signal_pulse().T
         v = np.ones(3)/np.sqrt(3)
         
-        search_ang = np.linspace(low,high,2000)
-        search_gain = self.array.get_gain(search_ang)
-        
         #compute the distance from the [1,1,1] vector passing though each of the signal_mean_for_angle vectors
         #from the measured signal vector of 3 measurements
-        dist = np.linalg.norm((v*((recieved_strengths-search_gain)@v)[:,None]+search_gain)-recieved_strengths,axis=1)
-        
+        dist = np.linalg.norm((v*((recieved_strengths-self.search_gain)@v)[:,None]+self.search_gain)-recieved_strengths,axis=1)
         #compute the prob. density at this distance (for a normal distribution with standard deviation equal to
         #the noise added to generate the signals
-        ps = norm(0,4).pdf(dist)
+        ps = norm(0,self.gauss_noise_add).pdf(dist)
         #normalise
-        ps/=np.sum(ps)*(search_ang[1]-search_ang[0])
-        
-        return (ps, search_ang, search_gain, recieved_strengths)
+        ps /= np.sum(ps)*(self.search_ang[1]-self.search_ang[0])
+        return (ps, recieved_strengths)
         
     def plot_estimation_vectors(self, high, low):
         #store a unit vector facing along [1,1,1]
         
-        ps, search_ang, search_gain, recieved_strengths = self.ps_calculation(high, low)
+        ps, recieved_strengths = self.ps_calculation()
         plt.figure(figsize=[8,10])
         plt.subplot(2,1,1)
-        plt.plot(search_ang,search_gain[:,0],'g-')
-        plt.plot(search_ang,search_gain[:,1],'k-')
-        plt.plot(search_ang,search_gain[:,2],'b-')
+        plt.plot(self.search_ang,self.search_gain[:,0],'g-')
+        plt.plot(self.search_ang,self.search_gain[:,1],'k-')
+        plt.plot(self.search_ang,self.search_gain[:,2],'b-')
 
         plt.plot(self.receiver_angle,recieved_strengths[0,0],'xg')
         plt.plot(self.receiver_angle,recieved_strengths[0,1],'xk')
@@ -74,7 +80,7 @@ class Model:
         plt.ylabel('Signal Strength / dBm or dB')
         plt.xlim([low,high])
         plt.subplot(2,1,2)
-        plt.plot(search_ang,ps)
+        plt.plot(self.search_ang,ps)
         plt.vlines(self.receiver_angle,0,10,'r')
         plt.xlim([low,high])
         plt.ylabel('Probability Density')
@@ -185,7 +191,7 @@ class Model:
 
     def gauss_noise(self,signal):
         #95% between -3 and 3 dB
-        noiser = lambda x: np.random.normal(x,4)
+        noiser = lambda x: np.random.normal(x,self.gauss_noise_add)
         noisefunc = np.vectorize(noiser)
         return noisefunc(signal)
     
@@ -203,9 +209,9 @@ class Model:
         
         ax.legend()
         
-    def polar_plot(self):
-        fig = plt.figure()
-        self.array.polar_plot()
+    def polar_plot(self,ax):
+        #fig = plt.figure()
+        self.array.polar_plot(ax)
         
     def plot_ideal_mono_pair(self, low, high, ant1_id, ant2_id):
         fig = plt.figure()
