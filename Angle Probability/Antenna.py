@@ -26,23 +26,27 @@ class Antenna:
         
         return gain + self.gain
     
+
     def get_gain(self, theta):
         return self.base_gain(self.relative_theta(theta))
     
+ 
     def set_separation(self, separation):
         self.rotation = separation
     
     #change to positive angle from if where the antenna is pointing is the origin
+
     def relative_theta(self, theta):
         relative = theta - self.rotation
         relative[relative < 0] += 2*np.pi
         return relative
 
-    ######## Pattern Approximation ###########        
+    ######## Pattern Approximation ###########
+     
     def main_lobe_approx(self, theta):
         g = 50 * np.power(np.cos(theta),57)
         return g-25
-        
+   
     def data_frame_initialisation(self):
         wanted_keys = ('theta', 'magdB')
         mat = scipy.io.loadmat('ExampleDishFarfieldAz.mat')
@@ -71,7 +75,7 @@ class Antenna:
         df = df.sort_values("deg")
 
         return df
-    
+
     def side_lobe_function_init(self):
         left_lobe_thetas = np.array(self.df['theta']) > np.pi/16-0.01 # and np.array(df['theta']) < (np.pi*2)-np.pi/16
         right_lobe_thetas = np.array(self.df['theta']) < (np.pi*2)-np.pi/16
@@ -93,13 +97,13 @@ class Antenna:
         return p
     
     ######## VISUALISATIONS ##################
-    
+
     def polar_plot(self, ax, col):
         theta = np.linspace(-np.pi,np.pi,5000)
         #theta2 = np.mod(theta-self.rotation, (2*np.pi))
         gain = self.get_gain(theta)
         
         ax.plot(theta,gain, col, label=self.id)
-        
+
     def spatial_plot(self, ax, col):
         ax.plot(self.position[0],self.position[1],'x'+col, label=self.id)

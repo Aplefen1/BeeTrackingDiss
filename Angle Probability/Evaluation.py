@@ -13,11 +13,12 @@ class Evaluation:
         self.sep_high = sep_high
         
         self.rec_test_angles = np.linspace(rec_low_ang,rec_high_ang,steps)
-        self.ant_sep_angles = np.linspace(sep_low,sep_high,100)
+        self.ant_sep_angles = np.linspace(sep_low,sep_high,500)
         
         self.model = Model(0,100,0)
         self.i = 0
-        
+    
+
     def eval_model(self, ax : plt.Axes):
         vector_ang = np.vectorize(self.model.angle_analysis)
         
@@ -32,6 +33,7 @@ class Evaluation:
         model_error = vector_single(self.rec_test_angles)
         
         #compute error for every reciever angle 
+
         '''
         for rec_ang in self.rec_test_angles:
             rec_angle_error = []
@@ -43,8 +45,8 @@ class Evaluation:
                 
             model_error.append(np.mean(np.array(rec_angle_error)))
         '''
+
         ax.plot(self.rec_test_angles,model_error)
-        ax.set_title("Mean abs error for each angle")
         ax.set_ylabel("MAE")
         ax.set_xlabel("Angle")
         
@@ -66,13 +68,14 @@ class Evaluation:
             ax2.clear()
             self.eval_model(ax1)
             self.model.polar_plot(ax2)
+            ax1.set_title(self.ant_sep_angles[self.i])
             self.i += 1
             return mplfig_to_npimage(fig)
 
-        Nframes = np.shape(self.ant_sep_angles)[0]
+        Nframes = (np.shape(self.ant_sep_angles)[0]) / 4
         animation = VideoClip(make_frame, duration = Nframes)
         
         if filename is not None:
-            animation.write_videofile(filename,fps=1,codec='mpeg4',bitrate='3000k')
+            animation.write_videofile(filename,fps=4,codec='mpeg4',bitrate='3000k')
         else:
-            return animation.ipython_display(fps = 1, loop = False, autoplay = True)
+            return animation.ipython_display(fps = 4, loop = False, autoplay = True)

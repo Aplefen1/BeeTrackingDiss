@@ -3,7 +3,9 @@ from MonoPattern import MonoPattern
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Array:
+
     def __init__(self, pos, rotation, array_separation) -> None:
         self.position = np.array(pos)
         self.rotation = rotation
@@ -16,10 +18,13 @@ class Array:
 
         self.ant_lookup = {'AL' : self.ant_left, 'AM' : self.ant_middle, 'AR' : self.ant_right}
         
+        '''
         self.AL_AM_model = self.create_mono_model("AL","AM")
         self.AL_AR_model = self.create_mono_model("AL","AR")
         self.AM_AR_model = self.create_mono_model("AM","AR")
-        
+        '''
+
+    
     def get_gain(self, theta) -> np.ndarray:
         AL = self.ant_left.get_gain(theta)
         AM = self.ant_middle.get_gain(theta)
@@ -27,12 +32,13 @@ class Array:
         
         return np.array([AL,AM,AR]).T
     
+
     def set_separation(self, separation):
         self.ant_left.set_separation(separation)
         self.ant_right.set_separation(-separation)
         
     ######### Ideal Mono Pulse Function ####
-        
+
     def ideal_from_ID(self, antA_ID, antB_ID, theta):
         antA = self.ant_lookup[antA_ID]
         antB = self.ant_lookup[antB_ID]
@@ -47,7 +53,7 @@ class Array:
         mono = diff / sum
         
         return diff
-    
+
     def create_mono_model(self, antA_ID, antB_ID):
         antA = self.ant_lookup[antA_ID]
         antB = self.ant_lookup[antB_ID]
@@ -58,7 +64,7 @@ class Array:
         return monoModel
 
     ########## Visualisations ##############
-
+ 
     def polar_plot(self,ax):
         #ax = plt.subplot(projection="polar")
         
@@ -67,13 +73,13 @@ class Array:
         self.ant_right.polar_plot(ax, 'r')
         
         #ax.legend()
-        
+   
     def spatial_plot(self, ax):
         
         self.ant_left.spatial_plot(ax,'b')
         self.ant_middle.spatial_plot(ax,'g')
         self.ant_right.spatial_plot(ax,'r')
-        
+     
     def plot_against(self):
         thetas = np.linspace(-np.pi/2,np.pi/2,1000)
         a = self.ant_left.get_gain(thetas)
@@ -93,7 +99,7 @@ class Array:
         cx.plot(a,c)
         cx.set_title("l/r")
         
-        
+     
     def plot_ideal_mono_pair(self, low, high, ant1_id, ant2_id):
         theta = np.linspace(low,high,1000)
         mono_func = self.ideal_from_ID(ant1_id,ant2_id,theta)
@@ -101,7 +107,7 @@ class Array:
         fig = plt.figure()
         ax = plt.subplot()
         ax.plot(theta,mono_func)
-        
+     
     def plot_all_mono_pairs(self, low, high):
         theta = np.linspace(low,high,1000)
         AL_AM_mono = self.ideal_from_ID("AL","AM",theta)

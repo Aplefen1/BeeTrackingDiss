@@ -8,6 +8,7 @@ from scipy.stats import gaussian_kde
 from scipy.stats import multivariate_normal as mvn
 from scipy.stats import norm as norm
 
+
 class Model:
     def __init__(self, reciever_angle, reciever_distance, array_separation) -> None:
         self.gauss_noise_add = 4
@@ -25,19 +26,21 @@ class Model:
         
         self.search_ang = np.linspace(-np.pi,np.pi,100)
         self.search_gain = self.array.get_gain(self.search_ang)
-        
+
+  
     def set_reciver_angle(self, new_angle):
         self.receiver_angle = new_angle
         x = self.reciever_distance * np.cos(new_angle)
         y = self.reciever_distance * np.sin(new_angle)
         self.receiver.set_pos([x,y])
-        
+
+     
     def set_antenna_separation(self, separation):
         self.array.set_separation(separation)
         self.search_gain = self.array.get_gain(self.search_ang)
         
     ####### Vector Estimation #####
-        
+
     def angle_analysis(self, p):
         
         ps, *a = self.ps_calculation()
@@ -46,7 +49,8 @@ class Model:
         est_ang = np.random.choice(self.search_ang, p=probabilities)
         
         return np.abs(np.subtract(self.receiver_angle,est_ang)) #error
-        
+
+   
     def ps_calculation(self):
         import timeit
         recieved_strengths = self.signal_pulse().T
@@ -178,16 +182,18 @@ class Model:
         signalR = self.signal_model(signalR, distR, -3)
         
         return signalL, signalM, signalR
-        
+ 
     def signal_model(self, base_sig, dist, rec_gain):
         loss_sig = self.free_space_loss(base_sig, dist, rec_gain)
         gauss_sig = self.gauss_noise(loss_sig)
         final_sig = self.constant_noise(gauss_sig)
 
         return final_sig
+    
 
     def free_space_loss(self, signal, dist, rec_gain):
         return signal - (20*np.log10(dist)+40.05-rec_gain)
+    
 
     def gauss_noise(self,signal):
         #95% between -3 and 3 dB
@@ -195,6 +201,7 @@ class Model:
         noisefunc = np.vectorize(noiser)
         return noisefunc(signal)
     
+
     def constant_noise(self, signal):
         return signal + 0
     ##########################
