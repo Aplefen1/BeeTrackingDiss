@@ -8,9 +8,11 @@ from scipy.stats import gaussian_kde
 from scipy.stats import multivariate_normal as mvn
 from scipy.stats import norm as norm
 
+from numba import jit, cuda
+
 
 class Model:
-    def __init__(self, reciever_angle, reciever_distance, array_separation) -> None:
+    def __init__(self, reciever_angle, reciever_distance, array_separation, eval_iterations=0) -> None:
         self.gauss_noise_add = 4
         self.array = Array([0,0],0, array_separation)
         self.receiver_angle = reciever_angle
@@ -18,15 +20,17 @@ class Model:
         x = reciever_distance * np.cos(reciever_angle)
         y = reciever_distance * np.sin(reciever_angle)
         self.receiver = Receiver([x,y],-3)
-        self.L, self.M, self.R = self.recieved_signals()
+        '''
+        self.L, self.M, self.R = self.recieved_signals(1000)
         self.L_M = self.L - self.M
         self.M_R = self.M - self.R
         self.L_R = self.L - self.R
         self.noise_std = 1.5
-        
-        self.search_ang = np.linspace(-np.pi,np.pi,100)
+        '''
+        self.search_ang = np.linspace(-np.pi/4,np.pi/4,100)
         self.search_gain = self.array.get_gain(self.search_ang)
-
+        self.MAE_vectorised = np.vectorize(self.MAE)
+        self.eval_iterations = eval_iterations
   
     def set_reciver_angle(self, new_angle):
         self.receiver_angle = new_angle
@@ -42,20 +46,27 @@ class Model:
     ####### Vector Estimation #####
 
     def angle_analysis(self, p):
-        
-        ps, *a = self.ps_calculation()
+        ps, *a = self.ps_calculation_single()
         probabilities = np.multiply(ps, self.search_ang[1]-self.search_ang[0])
         
         est_ang = np.random.choice(self.search_ang, p=probabilities)
         
         return np.abs(np.subtract(self.receiver_angle,est_ang)) #error
 
-   
-    def ps_calculation(self):
-        import timeit
-        recieved_strengths = self.signal_pulse().T
+    def abs_error(self, recieved_strengths):
         v = np.ones(3)/np.sqrt(3)
-        
+        d = np.linalg.norm((v*((recieved_strengths-self.search_gain)@v)[:,None]+self.search_gain)-recieved_strengths,axis=1)
+        ps = norm(0,self.gauss_noise_add).pdf(d)
+        #normalise
+        ps /= np.sum(ps)*(self.search_ang[1]-self.search_ang[0])
+        probs = np.multiply(ps, self.search_ang[1]-self.search_ang[0])
+        ang = np.random.choice(self.search_ang, p=probs)
+        return np.abs(np.subtract(self.receiver_angle,ang))
+   
+    def ps_calculation_single(self):
+        recieved_strengths = self.signal_pulse()
+
+        v = np.ones(3)/np.sqrt(3)
         #compute the distance from the [1,1,1] vector passing though each of the signal_mean_for_angle vectors
         #from the measured signal vector of 3 measurements
         dist = np.linalg.norm((v*((recieved_strengths-self.search_gain)@v)[:,None]+self.search_gain)-recieved_strengths,axis=1)
@@ -65,11 +76,22 @@ class Model:
         #normalise
         ps /= np.sum(ps)*(self.search_ang[1]-self.search_ang[0])
         return (ps, recieved_strengths)
+    
+    #Returns the MAE for a given angle using a number of samples (iterations)
+    def MAE(self, angle):
+        self.set_reciver_angle(angle)
+        recieved_signals = self.recieved_signals(self.eval_iterations)
+        MAE = 0
+        for sig in recieved_signals:
+            MAE += self.abs_error(sig)
+
+        return (MAE/len(recieved_signals))
+
         
     def plot_estimation_vectors(self, high, low):
         #store a unit vector facing along [1,1,1]
         
-        ps, recieved_strengths = self.ps_calculation()
+        ps, recieved_strengths = self.ps_calculation_single()
         plt.figure(figsize=[8,10])
         plt.subplot(2,1,1)
         plt.plot(self.search_ang,self.search_gain[:,0],'g-')
@@ -151,25 +173,25 @@ class Model:
         signalM = self.signal_model(signalM, distM, -3)
         signalR = self.signal_model(signalR, distR, -3)
         
-        return np.array([signalL, signalM, signalR])
+        return np.array([signalL, signalM, signalR]).T
     
 
-    def recieved_signals(self):
+    def recieved_signals(self, length) -> np.ndarray:
         deltaL = self.receiver.position - self.array.ant_left.position
         thetaL = np.arctan2(deltaL[1],deltaL[0])
-        thetaAL = np.empty(1000)
+        thetaAL = np.empty(length)
         thetaAL.fill(thetaL)
         distL = np.linalg.norm(deltaL)
         
         deltaM = self.receiver.position - self.array.ant_middle.position
         thetaM = np.arctan2(deltaM[1],deltaM[0])
-        thetaAM = np.empty(1000)
+        thetaAM = np.empty(length)
         thetaAM.fill(thetaM)
         distM = np.linalg.norm(deltaM)
         
         deltaR = self.receiver.position - self.array.ant_right.position
         thetaR = np.arctan2(deltaR[1],deltaR[0])
-        thetaAR = np.empty(1000)
+        thetaAR = np.empty(length)
         thetaAR.fill(thetaR)
         distR = np.linalg.norm(deltaR)
         
@@ -181,7 +203,7 @@ class Model:
         signalM = self.signal_model(signalM, distM, -3)
         signalR = self.signal_model(signalR, distR, -3)
         
-        return signalL, signalM, signalR
+        return np.array([signalL, signalM, signalR]).T
  
     def signal_model(self, base_sig, dist, rec_gain):
         loss_sig = self.free_space_loss(base_sig, dist, rec_gain)

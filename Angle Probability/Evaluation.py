@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numba import jit, cuda
 
+
+
 class Evaluation:
     def __init__(self, sep_low, sep_high, rec_low_ang, rec_high_ang, steps, iterations) -> None:
         self.rec_low_ang = rec_low_ang
@@ -13,9 +15,10 @@ class Evaluation:
         self.sep_high = sep_high
         
         self.rec_test_angles = np.linspace(rec_low_ang,rec_high_ang,steps)
-        self.ant_sep_angles = np.linspace(sep_low,sep_high,500)
+        self.ant_sep_angles = np.linspace(sep_low,sep_high,100)
+        self.rec_angle_error = np.zeros(self.iterations)
         
-        self.model = Model(0,100,0)
+        self.model = Model(0,100,0,iterations)
         self.i = 0
     
 
@@ -24,8 +27,7 @@ class Evaluation:
         
         def single_angle(a):
             self.model.set_reciver_angle(a)
-            rec_angle_error = np.zeros(self.iterations)
-            res = vector_ang(rec_angle_error)
+            res = vector_ang(self.rec_angle_error)
             return np.mean(res)
         
         vector_single = np.vectorize(single_angle)
@@ -33,24 +35,22 @@ class Evaluation:
         model_error = vector_single(self.rec_test_angles)
         
         #compute error for every reciever angle 
-
-        '''
-        for rec_ang in self.rec_test_angles:
-            rec_angle_error = []
-            self.model.set_reciver_angle(rec_ang)
-            
-            #repeat test for same angle
-            for i in range(self.iterations):
-                rec_angle_error.append(self.model.angle_analysis())
-                
-            model_error.append(np.mean(np.array(rec_angle_error)))
-        '''
-
+        
         ax.plot(self.rec_test_angles,model_error)
         ax.set_ylabel("MAE")
         ax.set_xlabel("Angle")
-        
-        
+    
+    def opt_eval(self, ax : plt.Axes):
+        MAE = self.model.MAE_vectorised(self.rec_test_angles)
+        '''np.zeros_like(self.rec_test_angles)
+        for i in range(len(self.rec_test_angles)):
+            MAE[i] = self.model.MAE(self.rec_test_angles[i],self.iterations)
+        '''
+        ax.plot(self.rec_test_angles,MAE)
+        ax.set_ylabel("MAE")
+        ax.set_xlabel("Angle")
+
+
     def makemovie(self,filename=None):
         """
         Generates a diagnostic/debug movie, saved in 'filename'.
@@ -66,7 +66,7 @@ class Evaluation:
             self.model.set_antenna_separation(self.ant_sep_angles[self.i])
             ax1.clear()
             ax2.clear()
-            self.eval_model(ax1)
+            self.opt_eval(ax1)
             self.model.polar_plot(ax2)
             ax1.set_title(self.ant_sep_angles[self.i])
             self.i += 1

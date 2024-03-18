@@ -1,3 +1,4 @@
+from numba import jit, cuda
 class Receiver:
     def __init__(self, position, gain) -> None:
         
