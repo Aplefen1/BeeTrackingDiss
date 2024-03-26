@@ -7,7 +7,8 @@ class Receiver:
         
 ########## Visualisations ##############
     def plot_spatial(self, ax):
-        ax.plot(self.position[0],self.position[1],'oy', label='reciever')
+        ax.plot(self.position[0],self.position[1],'oy')
         
-    def set_pos(self,pos):
+    def set_pos(self, pos : list[float]):
+        '''Pos : [x,y]'''
         self.position = pos

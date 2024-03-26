@@ -5,32 +5,46 @@ import matplotlib.pyplot as plt
 
 class Antenna:
 
-    def __init__(self, pos, rotation, gain, id) -> None:
+    def __init__(self,type, pos, rotation, gain, id) -> None:
         self.position = pos
         self.rotation = rotation
         self.gain = gain
         self.lobe_function = None
         self.id = id
+        self.type = type
         self.df = self.data_frame_initialisation()
         self.side_lobe_function = self.side_lobe_function_init()
     
 
     def base_gain(self,theta):
         theta = np.mod(theta, np.pi*2)
-        theta_sides = np.logical_and(theta > np.pi/16, theta < 31*np.pi/16)
-        main = np.logical_not(theta_sides)
-        gain = np.zeros(theta.shape)
-        
-        gain[theta_sides] = self.side_lobe_function(theta[theta_sides])
-        gain[main] = self.main_lobe_approx(theta[main])
-        
-        return gain + self.gain
+        if self.type == "narrow":
+            theta_sides = np.logical_and(theta > np.pi/16, theta < 31*np.pi/16)
+            main = np.logical_not(theta_sides)
+            gain = np.zeros(theta.shape)
+            
+            gain[theta_sides] = self.side_lobe_function(theta[theta_sides])
+            gain[main] = self.main_lobe_approx_narrow(theta[main])
+            
+            return gain + self.gain
+        elif self.type == "wide":
+            theta_sides = np.logical_and(theta > np.pi/8, theta < (2 * np.pi - np.pi/8))
+            main = np.logical_not(theta_sides)
+            gain = np.zeros(theta.shape)
+            
+            gain[theta_sides] = self.side_lobe_function(theta[theta_sides])
+            gain[main] = self.main_lobe_approx_wide(theta[main])
+            
+            return gain + self.gain
+
+        elif self.type == "omni":
+            gain = np.zeros(theta.shape)
+            return gain + self.gain
     
 
     def get_gain(self, theta):
         return self.base_gain(self.relative_theta(theta))
     
- 
     def set_separation(self, separation):
         self.rotation = separation
     
@@ -43,8 +57,12 @@ class Antenna:
 
     ######## Pattern Approximation ###########
      
-    def main_lobe_approx(self, theta):
+    def main_lobe_approx_narrow(self, theta):
         g = 50 * np.power(np.cos(theta),57)
+        return g-25
+    
+    def main_lobe_approx_wide(self,theta):
+        g = 38 * np.power(np.cos(theta),19)
         return g-25
    
     def data_frame_initialisation(self):
@@ -106,4 +124,4 @@ class Antenna:
         ax.plot(theta,gain, col, label=self.id)
 
     def spatial_plot(self, ax, col):
-        ax.plot(self.position[0],self.position[1],'x'+col, label=self.id)
+        ax.plot(self.position[0],self.position[1],'x'+col)

@@ -7,14 +7,16 @@ import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 from scipy.stats import multivariate_normal as mvn
 from scipy.stats import norm as norm
-
-from numba import jit, cuda
+from scipy.stats import mode
+from scipy.signal import find_peaks
+import math
 
 
 class Model:
-    def __init__(self, reciever_angle, reciever_distance, array_separation, eval_iterations=0) -> None:
+    def __init__(self, reciever_angle, reciever_distance, array_separation, 
+                  ant_types=("narrow","narrow","narrow"), eval_iterations=0) -> None:
         self.gauss_noise_add = 4
-        self.array = Array([0,0],0, array_separation)
+        self.array = Array(ant_types,[0,0],0, array_separation)
         self.receiver_angle = reciever_angle
         self.reciever_distance = reciever_distance
         x = reciever_distance * np.cos(reciever_angle)
@@ -30,40 +32,106 @@ class Model:
         self.search_ang = np.linspace(-np.pi/4,np.pi/4,100)
         self.search_gain = self.array.get_gain(self.search_ang)
         self.MAE_vectorised = np.vectorize(self.MAE)
+        self.mode_vectorised = np.vectorize(self.mode_angle)
+        self.prob_vectorised = np.vectorize(self.angle_prob_iterations)
         self.eval_iterations = eval_iterations
   
     def set_reciver_angle(self, new_angle):
+        '''Sets the angle of the reciever to the array at the model's set distance'''
         self.receiver_angle = new_angle
         x = self.reciever_distance * np.cos(new_angle)
         y = self.reciever_distance * np.sin(new_angle)
         self.receiver.set_pos([x,y])
 
-     
     def set_antenna_separation(self, separation):
+        '''Changes how far apart the side antennas are from the central antenna (radians)'''
         self.array.set_separation(separation)
         self.search_gain = self.array.get_gain(self.search_ang)
         
-    ####### Vector Estimation #####
+    def set_random_reciever(self, alow=-np.pi/4, ahigh=np.pi/4, dlow=30, dhigh=300):
+        angle = np.random.uniform(low=alow,high=ahigh)
+        distance = np.random.uniform(low=dlow,high=dhigh)
+        x = distance * np.cos(angle)
+        y = distance * np.sin(angle)
+        
+        self.receiver.set_pos([x,y])
+        
+    ####### Probable Vector Calculation ######################
+    
+    '''Given a signal pulse, what are the 3 most likely vectors?'''
+    
+    def estimate_vectors(self):
+        signal_pulse = self.signal_pulse()
+        probs = self.norm_dist(signal_pulse)
+        
+        maxima, _ = find_peaks(probs)
+        
+        maxima = maxima[np.argsort(probs[maxima])[::-1]]
+        
+        if len(maxima) > 3:
+            return self.search_ang[maxima[0:3]], probs[maxima]
+        
+        return self.search_ang[maxima], probs[maxima]
+        
+    ####### Angles using Closeness and Analysis #######
+        
+    def norm_dist(self, rec_strengths):
+        '''Creates a distribution that ties each angle in self.search_ang to a probability
+        Used in most analysis funvtions
+        
+        Parameters:
+        rec_strengths -- noisy angles from three transmitters
+        
+        Returns:
+        Probability Distribution, same size as self.search_ang'''
+        
+        v = np.ones(3)/np.sqrt(3)
+        d = np.linalg.norm((v*((rec_strengths-self.search_gain)@v)[:,None]+self.search_gain)-rec_strengths,axis=1)
+        ps = norm(0,self.gauss_noise_add).pdf(d)
+        #normalise
+        ps /= np.sum(ps)*(self.search_ang[1]-self.search_ang[0])
+        return np.multiply(ps, self.search_ang[1]-self.search_ang[0])
 
     def angle_analysis(self, p):
+        '''Returns the Absolute Error for the current setup with a single pulse
+        Noise is added to the signal, angle choice is simple and random based off
+        distribution given by signal pulse
+        '''
         ps, *a = self.ps_calculation_single()
         probabilities = np.multiply(ps, self.search_ang[1]-self.search_ang[0])
         
         est_ang = np.random.choice(self.search_ang, p=probabilities)
         
         return np.abs(np.subtract(self.receiver_angle,est_ang)) #error
-
+    
+    def find_nearest(self,angle):
+        '''Finds "nearest" angle index in the model's searchspace'''
+        array = self.search_ang
+        idx = np.searchsorted(array, angle, side="left")
+        if idx > 0 and (idx == len(self.search_ang) or math.fabs(angle - array[idx-1]) < math.fabs(angle - array[idx])):
+            return idx-1
+        else:
+            return idx
+        
     def abs_error(self, recieved_strengths):
-        v = np.ones(3)/np.sqrt(3)
-        d = np.linalg.norm((v*((recieved_strengths-self.search_gain)@v)[:,None]+self.search_gain)-recieved_strengths,axis=1)
-        ps = norm(0,self.gauss_noise_add).pdf(d)
-        #normalise
-        ps /= np.sum(ps)*(self.search_ang[1]-self.search_ang[0])
-        probs = np.multiply(ps, self.search_ang[1]-self.search_ang[0])
+        '''Very similar to Model.angle_analysis but used in optimised analysis'''
+        probs = self.norm_dist(recieved_strengths)
         ang = np.random.choice(self.search_ang, p=probs)
         return np.abs(np.subtract(self.receiver_angle,ang))
+    
+    #Return probability of reciever angle being estimated from dristibution generated by noisy signals
+    def angle_probability(self, recieved_strengths):
+        '''Returns the probability that an angle is chosen given a set of recieved strengths'''
+        probs = self.norm_dist(recieved_strengths)
+        idx = self.find_nearest(self.receiver_angle)
+        return probs[idx] + probs[idx-1] + probs[idx+1]
    
     def ps_calculation_single(self):
+        '''Similar to  self.norm_dist, but samples it's own noisy angle#
+        
+        Returns: (ps, recieved_strengths)
+        ps -- PDF of possible angles given recieved_strengths'''
+        
         recieved_strengths = self.signal_pulse()
 
         v = np.ones(3)/np.sqrt(3)
@@ -79,6 +147,14 @@ class Model:
     
     #Returns the MAE for a given angle using a number of samples (iterations)
     def MAE(self, angle):
+        '''Performs an analysis of the current transmitter/reciever setup, performing self.eval_iterations
+        number of samples to work out the MAE of the current setup
+        
+        Parameters:
+        angle -- angle to set the reciever to in Radians
+        
+        Returns:
+        MAE of the system at angle'''
         self.set_reciver_angle(angle)
         recieved_signals = self.recieved_signals(self.eval_iterations)
         MAE = 0
@@ -86,10 +162,202 @@ class Model:
             MAE += self.abs_error(sig)
 
         return (MAE/len(recieved_signals))
+    
+    #Returns probaility that angle is estimated over a number of samples
+    def angle_prob_iterations(self, angle):
+        '''Performs analysis of the current transmitter/reciever setup, performing self.eval_iterations
+        number of samples to work out the mean probability that the current reciever angle will be estimated by
+        the model
+        
+        Parameters:
+        angle -- angle to set the reciever to in Radians
+        
+        Returns:
+        Mean probability'''
+        self.set_reciver_angle(angle)
+        recieved_signals = self.recieved_signals(self.eval_iterations)
+        prob = 0
+        for sig in recieved_signals:
+            prob += self.angle_probability(sig)
+            
+        return (prob/len(recieved_signals))
 
+    def mode_angle(self, angle):
+        '''Performs analysis of the current transmitter/reciever setup, performing self.eval_iterations
+        number of samples to work out mode angle returned by the system
+        
+        Parameters:
+        angle -- angle to set the reciever to in Radians
+        
+        Returns:
+        Mode angle estimated'''
+        #Mode is taken to be the angle with the highest probability (for simplicity)
+        self.set_reciver_angle(angle)
+        recieved_signals = self.recieved_signals(self.eval_iterations)
+        mean_mode = 0
+        for sig in recieved_signals:
+            probs = self.norm_dist(sig)
+            max = np.argmax(probs)
+            mode_angle = self.search_ang[max]
+            mean_mode += mode_angle
+        
+        return (mean_mode/len(recieved_signals))
+        
+
+    ######## Signal modelling #########
+    
+    '''Group of methods and utilities that model the signal through space,
+    taking into account Free space path loss, noise and loosing signals'''
+
+    def signal_pulse(self):
+        '''Models a single pulse from the antenna array to the receiver
+        return a vector of the Left antena, middle, right'''
+        deltaL = self.receiver.position - self.array.ant_left.position
+        thetaL = np.arctan2(deltaL[1],deltaL[0])
+        distL = np.linalg.norm(deltaL)
+        
+        deltaM = self.receiver.position - self.array.ant_middle.position
+        thetaM = np.arctan2(deltaM[1],deltaM[0])
+        distM = np.linalg.norm(deltaM)
+        
+        deltaR = self.receiver.position - self.array.ant_right.position
+        thetaR = np.arctan2(deltaR[1],deltaR[0])
+        distR = np.linalg.norm(deltaR)
+        
+        signalL = self.array.ant_left.get_gain(np.array([thetaL]))
+        signalM = self.array.ant_middle.get_gain(np.array([thetaM]))
+        signalR = self.array.ant_right.get_gain(np.array([thetaR]))
+        
+        signalL = self.signal_model(signalL, distL, -3)
+        signalM = self.signal_model(signalM, distM, -3)
+        signalR = self.signal_model(signalR, distR, -3)
+        
+        #TODO Make sure that signals are lost if they are below the reciever gain (-94)
+        
+        return np.array([signalL, signalM, signalR]).T
+    
+
+    def recieved_signals(self, length) -> np.ndarray:
+        '''Optimises the signal_pulse to very quickly fill out an matrix of length length
+        filled with individually modelled signal pulses. I.e. each x in the return matrix
+        is a unique vector of the recieved signals from the array, each modelled with noise
+        and FSPL
+        Used to help analyse current setups quickly
+        '''
+        deltaL = self.receiver.position - self.array.ant_left.position
+        thetaL = np.arctan2(deltaL[1],deltaL[0])
+        thetaAL = np.empty(length)
+        thetaAL.fill(thetaL)
+        distL = np.linalg.norm(deltaL)
+        
+        deltaM = self.receiver.position - self.array.ant_middle.position
+        thetaM = np.arctan2(deltaM[1],deltaM[0])
+        thetaAM = np.empty(length)
+        thetaAM.fill(thetaM)
+        distM = np.linalg.norm(deltaM)
+        
+        deltaR = self.receiver.position - self.array.ant_right.position
+        thetaR = np.arctan2(deltaR[1],deltaR[0])
+        thetaAR = np.empty(length)
+        thetaAR.fill(thetaR)
+        distR = np.linalg.norm(deltaR)
+        
+        signalL = self.array.ant_left.get_gain(thetaAL)
+        signalM = self.array.ant_middle.get_gain(thetaAM)
+        signalR = self.array.ant_right.get_gain(thetaAR)
+        
+        signalL = self.signal_model(signalL, distL, -3)
+        signalM = self.signal_model(signalM, distM, -3)
+        signalR = self.signal_model(signalR, distR, -3)
+        
+        return np.array([signalL, signalM, signalR]).T
+ 
+    def signal_model(self, base_sig, dist, rec_gain):
+        '''Takes a base gain value and models the signal over a distance
+        
+        Parameters:
+        base_sig -- Unmodelled gain from a transmitter
+        distance -- Distance from antenna to reciever
+        rec_gain -- Gain of the reciever
+        
+        Returns:
+        Modelled signal (float)'''
+        
+        loss_sig = self.free_space_loss(base_sig, dist, rec_gain)
+        gauss_sig = self.gauss_noise(loss_sig)
+        final_sig = self.constant_noise(gauss_sig)
+
+        return final_sig
+    
+
+    def free_space_loss(self, signal, dist, rec_gain):
+        '''Applies the FSPL function to the signal'''
+        return signal - (20*np.log10(dist)+40.05-rec_gain)
+
+    def gauss_noise(self,signal):
+        '''Adds noise gaussianly to the signal'''
+        #95% between -3 and 3 dB
+        noiser = lambda x: np.random.normal(x,self.gauss_noise_add)
+        noisefunc = np.vectorize(noiser)
+        return noisefunc(signal)
+
+    def constant_noise(self, signal):
+        '''Adds a constant amount of noise to the signal
+        Set to 0 currently because no constant noise was identified'''
+        return signal + 0
+    ##########################
+    
+    ####### Visualisations #####
+    
+    def spatial_plot(self):
+        
+        fig = plt.figure()
+        ax = plt.subplot()
+        ax.set_ylim(-150,150)
+        ax.set_xlim(0,300)
+        self.array.spatial_plot(ax)
+        self.receiver.plot_spatial(ax)
+        
+        angle_vectors, probs = self.estimate_vectors()
+        array_x = self.array.position[0]
+        array_y = self.array.position[1]
+        
+        for angle, prob in zip(angle_vectors, probs):
+            end_x = array_x + 300 * np.cos(angle)
+            end_y = array_y + 300 * np.sin(angle)
+            ax.plot([array_x, end_x], [array_y, end_y], label=np.round(prob,7))
+        
+        ax.legend()
+        
+    def polar_plot(self,ax=None):
+        #fig = plt.figure()
+        if ax == None:
+            fig = plt.figure()
+            ax = plt.subplot(projection="polar")
+        self.array.polar_plot(ax)
+        
+    def plot_ideal_mono_pair(self, low, high, ant1_id, ant2_id):
+        fig = plt.figure()
+        self.array.plot_ideal_mono_pair(low, high, ant1_id, ant2_id)
+        
+    def plot_against(self):
+        self.array.plot_against()
+        
+    def plot_recieved_signals(self):
+        fig = plt.figure()
+        L, M, R = self.recieved_signals()
+        plt.hist(L, bins = 200, color='b')
+        plt.hist(M, bins = 200, color='g') 
+        plt.hist(R, bins = 200, color='r')
+        plt.show()
+        
+    def plot_all_mono_pairs(self,low,high):
+        self.array.plot_all_mono_pairs(low,high) 
         
     def plot_estimation_vectors(self, high, low):
-        #store a unit vector facing along [1,1,1]
+        '''Plots a graph from low, high of the signal patterns, the recieved noisly signals,
+        the generated PDF generated by the model and a red line showing the true angle of the
+        reciever'''
         
         ps, recieved_strengths = self.ps_calculation_single()
         plt.figure(figsize=[8,10])
@@ -111,9 +379,15 @@ class Model:
         plt.xlim([low,high])
         plt.ylabel('Probability Density')
         plt.xlabel('Angle / radians')
-        
- 
-    ####### Mono Pulse Estimation #####
+
+
+    ####### Mono Pulse Estimation #########
+    '''
+    Now Defunct methods to use mono-pulse analysis to estimate the angle
+    Not used because requires very accurate angles, slower and assumes all antenna
+    pairs are independant, which cannot be proved.
+    Works intuitively but doesn't work well in practice
+    '''
         
     def difference_distributions(self):
         
@@ -148,114 +422,3 @@ class Model:
         ax.plot(theta,M_R_prob_dist.pdf(theta),label="P(a|M-R)")
         ax.plot(theta,L_R_prob_dist.pdf(theta),label="P(a|L-R)")  
         ax.legend()
-        
-
-    ######## Signal modelling #########
-
-    def signal_pulse(self):
-        deltaL = self.receiver.position - self.array.ant_left.position
-        thetaL = np.arctan2(deltaL[1],deltaL[0])
-        distL = np.linalg.norm(deltaL)
-        
-        deltaM = self.receiver.position - self.array.ant_middle.position
-        thetaM = np.arctan2(deltaM[1],deltaM[0])
-        distM = np.linalg.norm(deltaM)
-        
-        deltaR = self.receiver.position - self.array.ant_right.position
-        thetaR = np.arctan2(deltaR[1],deltaR[0])
-        distR = np.linalg.norm(deltaR)
-        
-        signalL = self.array.ant_left.get_gain(np.array([thetaL]))
-        signalM = self.array.ant_middle.get_gain(np.array([thetaM]))
-        signalR = self.array.ant_right.get_gain(np.array([thetaR]))
-        
-        signalL = self.signal_model(signalL, distL, -3)
-        signalM = self.signal_model(signalM, distM, -3)
-        signalR = self.signal_model(signalR, distR, -3)
-        
-        return np.array([signalL, signalM, signalR]).T
-    
-
-    def recieved_signals(self, length) -> np.ndarray:
-        deltaL = self.receiver.position - self.array.ant_left.position
-        thetaL = np.arctan2(deltaL[1],deltaL[0])
-        thetaAL = np.empty(length)
-        thetaAL.fill(thetaL)
-        distL = np.linalg.norm(deltaL)
-        
-        deltaM = self.receiver.position - self.array.ant_middle.position
-        thetaM = np.arctan2(deltaM[1],deltaM[0])
-        thetaAM = np.empty(length)
-        thetaAM.fill(thetaM)
-        distM = np.linalg.norm(deltaM)
-        
-        deltaR = self.receiver.position - self.array.ant_right.position
-        thetaR = np.arctan2(deltaR[1],deltaR[0])
-        thetaAR = np.empty(length)
-        thetaAR.fill(thetaR)
-        distR = np.linalg.norm(deltaR)
-        
-        signalL = self.array.ant_left.get_gain(thetaAL)
-        signalM = self.array.ant_middle.get_gain(thetaAM)
-        signalR = self.array.ant_right.get_gain(thetaAR)
-        
-        signalL = self.signal_model(signalL, distL, -3)
-        signalM = self.signal_model(signalM, distM, -3)
-        signalR = self.signal_model(signalR, distR, -3)
-        
-        return np.array([signalL, signalM, signalR]).T
- 
-    def signal_model(self, base_sig, dist, rec_gain):
-        loss_sig = self.free_space_loss(base_sig, dist, rec_gain)
-        gauss_sig = self.gauss_noise(loss_sig)
-        final_sig = self.constant_noise(gauss_sig)
-
-        return final_sig
-    
-
-    def free_space_loss(self, signal, dist, rec_gain):
-        return signal - (20*np.log10(dist)+40.05-rec_gain)
-    
-
-    def gauss_noise(self,signal):
-        #95% between -3 and 3 dB
-        noiser = lambda x: np.random.normal(x,self.gauss_noise_add)
-        noisefunc = np.vectorize(noiser)
-        return noisefunc(signal)
-    
-
-    def constant_noise(self, signal):
-        return signal + 0
-    ##########################
-    
-    ####### Visualisations #####
-    
-    def spatial_plot(self):
-        fig = plt.figure()
-        ax = plt.subplot()
-        self.array.spatial_plot(ax)
-        self.receiver.plot_spatial(ax)
-        
-        ax.legend()
-        
-    def polar_plot(self,ax):
-        #fig = plt.figure()
-        self.array.polar_plot(ax)
-        
-    def plot_ideal_mono_pair(self, low, high, ant1_id, ant2_id):
-        fig = plt.figure()
-        self.array.plot_ideal_mono_pair(low, high, ant1_id, ant2_id)
-        
-    def plot_against(self):
-        self.array.plot_against()
-        
-    def plot_recieved_signals(self):
-        fig = plt.figure()
-        L, M, R = self.recieved_signals()
-        plt.hist(L, bins = 200, color='b')
-        plt.hist(M, bins = 200, color='g') 
-        plt.hist(R, bins = 200, color='r')
-        plt.show()
-        
-    def plot_all_mono_pairs(self,low,high):
-        self.array.plot_all_mono_pairs(low,high)

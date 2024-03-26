@@ -6,15 +6,17 @@ import matplotlib.pyplot as plt
 
 class Array:
 
-    def __init__(self, pos, rotation, array_separation) -> None:
+    def __init__(self, ant_types, pos, rotation, array_separation) -> None:
         self.position = np.array(pos)
         self.rotation = rotation
+        (type1, type2, type3) = ant_types
 
         ant_vector = np.array([0,0.1])
         ant_rot = array_separation
-        self.ant_right = Antenna(self.position - ant_vector, self.rotation + (2*np.pi - ant_rot), 30, 'AR') # 20 cm to right and roated 15 degrees clockwise
-        self.ant_middle = Antenna(self.position, self.rotation, 30, 'AM') # Position and rotation of Array
-        self.ant_left = Antenna(self.position + ant_vector, self.rotation + ant_rot, 30, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
+
+        self.ant_right = Antenna(type3, self.position - ant_vector, self.rotation + (2*np.pi - ant_rot), 30, 'AR') # 20 cm to right and roated 15 degrees clockwise
+        self.ant_middle = Antenna(type2, self.position, self.rotation, 30, 'AM') # Position and rotation of Array
+        self.ant_left = Antenna(type1, self.position + ant_vector, self.rotation + ant_rot, 30, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
 
         self.ant_lookup = {'AL' : self.ant_left, 'AM' : self.ant_middle, 'AR' : self.ant_right}
         
