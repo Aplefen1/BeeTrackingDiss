@@ -1,0 +1,41 @@
+Item, Quantity, Notes, Link
+Compass, 1, ,                                 https://uk.farnell.com/digilent/410-355/pmod-cmps2-3-axis-compass/dp/3295685#anchorTechnicalDOCS [ordered one]
+Hall effect sensor, 1, ,                      https://uk.farnell.com/honeywell/ss411p/sensor-hall-effect-bipolar-to/dp/1784734 [ordered 10]
+Magnet, 1, ,                                  https://uk.farnell.com/standexmeder/smco5-5x4mm/magnet-permanent/dp/1079498  [ordered 10]
+Tripods !!!!!!!ORDER!!!!!!!
+Nut for tripods, 1, Size: 5/8",               https://www.ebay.co.uk/itm/115541800152 [ordered 10]
+GPS modules,                                  https://www.ebay.co.uk/itm/285160164285 [ordered 1]
+Motor, 1, 30rpm,                              https://www.ebay.co.uk/itm/394322995875?var=662841243423
+Motor driver !!!!!NEED TO ASK CHRIS FOR ADVICE ON THESE!!!!!!
+Thrust Bearing, 1, F8-16M (8x16x5mm),         https://www.ebay.co.uk/itm/285017601410?var=586844404448 or https://www.ebay.co.uk/itm/315015313472 [ordered one]
+
+Ant.wire,36AWG=0.0127mm^2x31mmx9mg/mm³=3.5mg, https://www.ebay.co.uk/itm/144648259884 [have enough]
+RF Amplifier, 3,                              https://www.ebay.co.uk/itm/394830441329 [ordered 6]
+BLE dev tool (EV-BT832XE), 3,                 https://www.mouser.co.uk/ProductDetail/308-EVBT832XE [out of stock]
+                                                    ordered  https://mou.sr/3PjUS9l instead [ordered 3] !!!!CHECK WITH CHRIS!!!!
+Yagi Antenna, 3, ,                            https://uk.farnell.com/lprs/yagi-14-2-4g/antenna-yagi-14-element-2-4ghz/dp/2096217 or https://uk.rs-online.com/web/p/wifi-antennas/7839634 [ordered 3]
+Battery, 1, 12V 8Ah Rechargeable LiFePO4,     https://www.amazon.co.uk/gp/product/B0B5WBHDDN [gone]
+                                                   ordered https://www.amazon.co.uk/gp/product/B0BTYTQNH5 [ordered 1]
+Battery charger, ,                            https://www.amazon.co.uk/gp/product/B09KR7B6DD [already have this]
+SMA Male to SMA Male Connector ,              https://www.amazon.co.uk/gp/product/B07HK7XCNZ [out of stock]
+                                                   ordered https://www.amazon.co.uk/gp/product/B092R8QBRF [4 of these]
+                                                   ordered https://www.amazon.co.uk/gp/product/B07FCMF94S [5 of these]
+U.FL to SMA Female,                           https://www.amazon.co.uk/gp/product/B07YBYMBSV [ordered one pack of these]
+Rocker Switch, 1, ,                           https://www.amazon.co.uk/dp/B0825W4GGH [have enough]
+Filament, 3 spools, white: 1.75mm diameter,   https://amzn.eu/d/0vc9xZb [ordered 3 spools]
+Screw Twist Connectors, , ,                   https://www.amazon.co.uk/gp/product/B085TMMVN7 [have enough]
+Buck power converter, 1,                      https://www.amazon.co.uk/gp/product/B0823DB3W3 [ordered 5]
+Stripboard, 1, ,                              https://www.amazon.co.uk/gp/product/B08BK8CK8B [have enough]
+Cable to connect dev tool to programmer, 1,   https://www.mouser.co.uk/ProductDetail/485-1675 [not needed]
+Programmer dev board, 1,                      https://www.mouser.co.uk/ProductDetail/949-NRF52-DK [not needed]
+
+Tag:
+DA14531 dev kit, 1, for programming tag,      https://uk.farnell.com/dialog-semiconductor/da14531-00fxdevkt-u/dev-kit-usb-bluetooth-low-energy/dp/3265422
+DA14531 SoC, 1, PICK+PLACED, ...
+Supercap, 1, PICK+PLACED,                     https://www.mouser.co.uk/ProductDetail/628-CPH3225A
+Connector to program the tag, 1,              https://www.mouser.co.uk/ProductDetail/649-HLW8R-2C7LF
+Crystal, 1, PICK+PLACED,                      https://www.mouser.co.uk/ProductDetail/815-13W32-5-D1GT
+Capacitor, ?, PICK+PLACED,...?
+
+Ordered incorrectly in the past
+SMA (RF connector cable), 2, ,                https://www.amazon.co.uk/gp/product/B081JNQ7ML [DON'T NEED THIS]

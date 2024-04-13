@@ -1,9 +1,10 @@
-from numba import jit, cuda
+
 class Receiver:
-    def __init__(self, position, gain) -> None:
+    def __init__(self, position, gain, sens) -> None:
         
         self.position = position
         self.gain = gain
+        self.sensitivity = sens
         
 ########## Visualisations ##############
     def plot_spatial(self, ax):

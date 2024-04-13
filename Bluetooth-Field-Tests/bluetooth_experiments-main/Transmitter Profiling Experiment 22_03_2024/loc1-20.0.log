@@ -1,0 +1,849 @@
+
+
+Initialized RTC: 0x01Dev config complete
+SCAN START
+RSSI: -72 [da:ee:aa:ff:04:0b]
+
+RSSI: -49 [da:ee:aa:ff:04:8a]
+
+RSSI: -72 [da:ee:aa:ff:04:1b]
+
+RSSI: -82 [da:ee:aa:ff:0f:7c]
+
+RSSI: -50 [da:ee:aa:ff:04:9a]
+
+RSSI: -72 [da:ee:aa:ff:04:2b]
+
+RSSI: -79 [da:ee:aa:ff:0f:9c]
+
+RSSI: -49 [da:ee:aa:ff:04:aa]
+
+RSSI: -80 [da:ee:aa:ff:0f:bc]
+
+RSSI: -55 [da:ee:aa:ff:04:3b]
+
+RSSI: -60 [da:ee:aa:ff:04:3b]
+
+RSSI: -67 [da:ee:aa:ff:04:3b]
+
+RSSI: -51 [da:ee:aa:ff:04:ba]
+
+RSSI: -51 [da:ee:aa:ff:04:ba]
+
+RSSI: -51 [da:ee:aa:ff:04:4b]
+
+RSSI: -63 [da:ee:aa:ff:04:4b]
+
+RSSI: -51 [da:ee:aa:ff:04:ca]
+
+RSSI: -68 [da:ee:aa:ff:04:4b]
+
+RSSI: -51 [da:ee:aa:ff:04:ca]
+
+RSSI: -69 [da:ee:aa:ff:04:4b]
+
+RSSI: -51 [da:ee:aa:ff:04:ca]
+
+RSSI: -69 [da:ee:aa:ff:04:4b]
+
+RSSI: -51 [da:ee:aa:ff:04:ca]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -82 [da:ee:aa:ff:10:1c]
+
+RSSI: -73 [da:ee:aa:ff:04:6b]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -82 [da:ee:aa:ff:10:1c]
+
+RSSI: -72 [da:ee:aa:ff:04:6b]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -73 [da:ee:aa:ff:04:6b]
+
+RSSI: -50 [da:ee:aa:ff:04:ea]
+
+RSSI: -82 [da:ee:aa:ff:10:1c]
+
+RSSI: -72 [da:ee:aa:ff:04:6b]
+
+RSSI: -72 [da:ee:aa:ff:04:6b]
+
+RSSI: -50 [da:ee:aa:ff:04:fa]
+
+RSSI: -81 [da:ee:aa:ff:10:1c]
+
+RSSI: -73 [da:ee:aa:ff:04:6b]
+
+RSSI: -50 [da:ee:aa:ff:04:fa]
+
+RSSI: -80 [da:ee:aa:ff:10:2c]
+
+RSSI: -49 [da:ee:aa:ff:04:fa]
+
+RSSI: -72 [da:ee:aa:ff:04:7b]
+
+RSSI: -79 [da:ee:aa:ff:10:2c]
+
+RSSI: -49 [da:ee:aa:ff:04:fa]
+
+RSSI: -72 [da:ee:aa:ff:04:7b]
+
+RSSI: -80 [da:ee:aa:ff:10:2c]
+
+RSSI: -72 [da:ee:aa:ff:04:7b]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -72 [da:ee:aa:ff:04:7b]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -72 [da:ee:aa:ff:04:7b]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -72 [da:ee:aa:ff:04:7b]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -72 [da:ee:aa:ff:04:8b]
+
+RSSI: -80 [da:ee:aa:ff:10:4c]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -72 [da:ee:aa:ff:04:8b]
+
+RSSI: -80 [da:ee:aa:ff:10:4c]
+
+RSSI: -49 [da:ee:aa:ff:05:0a]
+
+RSSI: -72 [da:ee:aa:ff:04:8b]
+
+RSSI: -81 [da:ee:aa:ff:10:7c]
+
+RSSI: -72 [da:ee:aa:ff:04:ab]
+
+RSSI: -50 [da:ee:aa:ff:05:4a]
+
+RSSI: -81 [da:ee:aa:ff:10:7c]
+
+RSSI: -72 [da:ee:aa:ff:04:ab]
+
+RSSI: -50 [da:ee:aa:ff:05:4a]
+
+RSSI: -72 [da:ee:aa:ff:04:bb]
+
+RSSI: -50 [da:ee:aa:ff:05:4a]
+
+RSSI: -82 [da:ee:aa:ff:10:9c]
+
+RSSI: -72 [da:ee:aa:ff:04:bb]
+
+RSSI: -50 [da:ee:aa:ff:05:4a]
+
+RSSI: -72 [da:ee:aa:ff:04:bb]
+
+RSSI: -50 [da:ee:aa:ff:05:4a]
+
+RSSI: -72 [da:ee:aa:ff:04:bb]
+
+RSSI: -50 [da:ee:aa:ff:05:4a]
+
+RSSI: -72 [da:ee:aa:ff:04:bb]
+
+RSSI: -72 [da:ee:aa:ff:04:bb]
+
+RSSI: -49 [da:ee:aa:ff:05:6a]
+
+RSSI: -72 [da:ee:aa:ff:04:db]
+
+RSSI: -49 [da:ee:aa:ff:05:6a]
+
+RSSI: -71 [da:ee:aa:ff:04:db]
+
+RSSI: -65 [da:ee:aa:ff:10:ac]
+
+RSSI: -49 [da:ee:aa:ff:05:6a]
+
+RSSI: -71 [da:ee:aa:ff:04:db]
+
+RSSI: -71 [da:ee:aa:ff:04:db]
+
+RSSI: -73 [da:ee:aa:ff:10:ac]
+
+RSSI: -49 [da:ee:aa:ff:05:8a]
+
+RSSI: -72 [da:ee:aa:ff:04:db]
+
+RSSI: -79 [da:ee:aa:ff:10:ac]
+
+RSSI: -49 [da:ee:aa:ff:05:8a]
+
+RSSI: -71 [da:ee:aa:ff:04:db]
+
+RSSI: -79 [da:ee:aa:ff:10:ac]
+
+RSSI: -49 [da:ee:aa:ff:05:8a]
+
+RSSI: -51 [da:ee:aa:ff:05:9a]
+
+RSSI: -68 [da:ee:aa:ff:04:fb]
+
+RSSI: -51 [da:ee:aa:ff:05:9a]
+
+RSSI: -50 [da:ee:aa:ff:04:fb]
+
+RSSI: -50 [da:ee:aa:ff:05:9a]
+
+RSSI: -62 [da:ee:aa:ff:04:fb]
+
+RSSI: -50 [da:ee:aa:ff:05:9a]
+
+RSSI: -68 [da:ee:aa:ff:04:fb]
+
+RSSI: -50 [da:ee:aa:ff:05:9a]
+
+RSSI: -51 [da:ee:aa:ff:05:9a]
+
+RSSI: -80 [da:ee:aa:ff:10:dc]
+
+RSSI: -50 [da:ee:aa:ff:05:ba]
+
+RSSI: -80 [da:ee:aa:ff:10:dc]
+
+RSSI: -50 [da:ee:aa:ff:05:ba]
+
+RSSI: -81 [da:ee:aa:ff:10:dc]
+
+RSSI: -72 [da:ee:aa:ff:05:0b]
+
+RSSI: -81 [da:ee:aa:ff:10:fc]
+
+RSSI: -72 [da:ee:aa:ff:05:0b]
+
+RSSI: -50 [da:ee:aa:ff:05:da]
+
+RSSI: -50 [da:ee:aa:ff:05:da]
+
+RSSI: -72 [da:ee:aa:ff:05:1b]
+
+RSSI: -81 [da:ee:aa:ff:05:1b]
+
+RSSI: -50 [da:ee:aa:ff:05:da]
+
+RSSI: -72 [da:ee:aa:ff:05:1b]
+
+RSSI: -80 [da:ee:aa:ff:11:0c]
+
+RSSI: -49 [da:ee:aa:ff:05:ea]
+
+RSSI: -71 [da:ee:aa:ff:05:2b]
+
+RSSI: -80 [da:ee:aa:ff:11:0c]
+
+RSSI: -49 [da:ee:aa:ff:05:ea]
+
+RSSI: -71 [da:ee:aa:ff:05:2b]
+
+RSSI: -80 [da:ee:aa:ff:11:0c]
+
+RSSI: -71 [da:ee:aa:ff:05:2b]
+
+RSSI: -80 [da:ee:aa:ff:11:0c]
+
+RSSI: -49 [da:ee:aa:ff:05:ea]
+
+RSSI: -71 [da:ee:aa:ff:05:2b]
+
+RSSI: -71 [da:ee:aa:ff:05:2b]
+
+RSSI: -80 [da:ee:aa:ff:11:1c]
+
+RSSI: -49 [da:ee:aa:ff:05:fa]
+
+RSSI: -71 [da:ee:aa:ff:05:2b]
+
+RSSI: -49 [da:ee:aa:ff:05:fa]
+
+RSSI: -80 [da:ee:aa:ff:11:1c]
+
+RSSI: -80 [da:ee:aa:ff:11:1c]
+
+RSSI: -50 [da:ee:aa:ff:06:0a]
+
+RSSI: -80 [da:ee:aa:ff:11:2c]
+
+RSSI: -50 [da:ee:aa:ff:06:0a]
+
+RSSI: -68 [da:ee:aa:ff:05:5b]
+
+RSSI: -82 [da:ee:aa:ff:11:2c]
+
+RSSI: -50 [da:ee:aa:ff:06:0a]
+
+RSSI: -68 [da:ee:aa:ff:05:5b]
+
+RSSI: -80 [da:ee:aa:ff:11:2c]
+
+RSSI: -50 [da:ee:aa:ff:06:0a]
+
+RSSI: -68 [da:ee:aa:ff:05:5b]
+
+RSSI: -80 [da:ee:aa:ff:11:2c]
+
+RSSI: -50 [da:ee:aa:ff:06:0a]
+
+RSSI: -72 [da:ee:aa:ff:05:6b]
+
+RSSI: -73 [da:ee:aa:ff:05:6b]
+
+RSSI: -73 [da:ee:aa:ff:05:6b]
+
+RSSI: -37 [da:ee:aa:ff:06:3a]
+
+RSSI: -82 [da:ee:aa:ff:11:5c]
+
+RSSI: -36 [da:ee:aa:ff:06:3a]
+
+RSSI: -37 [da:ee:aa:ff:06:3a]
+
+RSSI: -81 [da:ee:aa:ff:11:5c]
+
+RSSI: -74 [da:ee:aa:ff:05:7b]
+
+RSSI: -50 [da:ee:aa:ff:06:3a]
+
+RSSI: -50 [da:ee:aa:ff:06:3a]
+
+RSSI: -82 [da:ee:aa:ff:11:5c]
+
+RSSI: -50 [da:ee:aa:ff:06:3a]
+
+RSSI: -81 [da:ee:aa:ff:11:5c]
+
+RSSI: -72 [da:ee:aa:ff:05:8b]
+
+RSSI: -49 [da:ee:aa:ff:06:4a]
+
+RSSI: -72 [da:ee:aa:ff:05:8b]
+
+RSSI: -49 [da:ee:aa:ff:06:4a]
+
+RSSI: -80 [da:ee:aa:ff:11:6c]
+
+RSSI: -72 [da:ee:aa:ff:05:8b]
+
+RSSI: -49 [da:ee:aa:ff:06:4a]
+
+RSSI: -81 [da:ee:aa:ff:11:6c]
+
+RSSI: -72 [da:ee:aa:ff:05:8b]
+
+RSSI: -49 [da:ee:aa:ff:06:4a]
+
+RSSI: -81 [da:ee:aa:ff:11:6c]
+
+RSSI: -72 [da:ee:aa:ff:05:8b]
+
+RSSI: -49 [da:ee:aa:ff:06:4a]
+
+RSSI: -71 [da:ee:aa:ff:05:8b]
+
+RSSI: -49 [da:ee:aa:ff:06:5a]
+
+RSSI: -72 [da:ee:aa:ff:05:9b]
+
+RSSI: -49 [da:ee:aa:ff:06:5a]
+
+RSSI: -70 [da:ee:aa:ff:11:7c]
+
+RSSI: -72 [da:ee:aa:ff:05:9b]
+
+RSSI: -49 [da:ee:aa:ff:06:5a]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -68 [da:ee:aa:ff:05:ab]
+
+RSSI: -63 [da:ee:aa:ff:11:8c]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -68 [da:ee:aa:ff:05:ab]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -68 [da:ee:aa:ff:05:ab]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -68 [da:ee:aa:ff:05:ab]
+
+RSSI: -80 [da:ee:aa:ff:11:8c]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -69 [da:ee:aa:ff:05:ab]
+
+RSSI: -63 [da:ee:aa:ff:11:8c]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -68 [da:ee:aa:ff:05:ab]
+
+RSSI: -65 [da:ee:aa:ff:11:8c]
+
+RSSI: -50 [da:ee:aa:ff:06:7a]
+
+RSSI: -68 [da:ee:aa:ff:05:ab]
+
+RSSI: -81 [da:ee:aa:ff:11:8c]
+
+RSSI: -81 [da:ee:aa:ff:11:ac]
+
+RSSI: -50 [da:ee:aa:ff:06:aa]
+
+RSSI: -81 [da:ee:aa:ff:11:bc]
+
+RSSI: -49 [da:ee:aa:ff:06:aa]
+
+RSSI: -71 [da:ee:aa:ff:05:eb]
+
+RSSI: -49 [da:ee:aa:ff:06:ba]
+
+RSSI: -80 [da:ee:aa:ff:11:dc]
+
+RSSI: -71 [da:ee:aa:ff:05:eb]
+
+RSSI: -49 [da:ee:aa:ff:06:ba]
+
+RSSI: -71 [da:ee:aa:ff:05:eb]
+
+RSSI: -49 [da:ee:aa:ff:06:ba]
+
+RSSI: -79 [da:ee:aa:ff:11:dc]
+
+RSSI: -71 [da:ee:aa:ff:05:eb]
+
+RSSI: -49 [da:ee:aa:ff:06:ba]
+
+RSSI: -78 [da:ee:aa:ff:11:dc]
+
+RSSI: -71 [da:ee:aa:ff:05:eb]
+
+RSSI: -49 [da:ee:aa:ff:06:ba]
+
+RSSI: -80 [da:ee:aa:ff:11:dc]
+
+RSSI: -71 [da:ee:aa:ff:05:eb]
+
+RSSI: -49 [da:ee:aa:ff:06:ba]
+
+RSSI: -80 [da:ee:aa:ff:11:ec]
+
+RSSI: -80 [da:ee:aa:ff:11:ec]
+
+RSSI: -68 [da:ee:aa:ff:06:1b]
+
+RSSI: -50 [da:ee:aa:ff:06:ea]
+
+RSSI: -68 [da:ee:aa:ff:06:1b]
+
+RSSI: -50 [da:ee:aa:ff:06:ea]
+
+RSSI: -68 [da:ee:aa:ff:06:1b]
+
+RSSI: -50 [da:ee:aa:ff:06:ea]
+
+RSSI: -68 [da:ee:aa:ff:06:1b]
+
+RSSI: -80 [da:ee:aa:ff:12:0c]
+
+RSSI: -50 [da:ee:aa:ff:06:ea]
+
+RSSI: -68 [da:ee:aa:ff:06:1b]
+
+RSSI: -81 [da:ee:aa:ff:12:0c]
+
+RSSI: -50 [da:ee:aa:ff:06:ea]
+
+RSSI: -68 [da:ee:aa:ff:06:1b]
+
+RSSI: -80 [da:ee:aa:ff:12:0c]
+
+RSSI: -50 [da:ee:aa:ff:06:ea]
+
+RSSI: -81 [da:ee:aa:ff:12:0c]
+
+RSSI: -80 [da:ee:aa:ff:12:2c]
+
+RSSI: -50 [da:ee:aa:ff:06:fa]
+
+RSSI: -72 [da:ee:aa:ff:06:3b]
+
+RSSI: -50 [da:ee:aa:ff:06:fa]
+
+RSSI: -72 [da:ee:aa:ff:06:3b]
+
+RSSI: -80 [da:ee:aa:ff:12:2c]
+
+RSSI: -50 [da:ee:aa:ff:06:fa]
+
+RSSI: -81 [da:ee:aa:ff:12:2c]
+
+RSSI: -72 [da:ee:aa:ff:06:4b]
+
+RSSI: -72 [da:ee:aa:ff:06:4b]
+
+RSSI: -50 [da:ee:aa:ff:07:0a]
+
+RSSI: -71 [da:ee:aa:ff:06:4b]
+
+RSSI: -50 [da:ee:aa:ff:07:0a]
+
+RSSI: -72 [da:ee:aa:ff:06:4b]
+
+RSSI: -37 [da:ee:aa:ff:07:0a]
+
+RSSI: -81 [da:ee:aa:ff:12:4c]
+
+RSSI: -72 [da:ee:aa:ff:06:4b]
+
+RSSI: -43 [da:ee:aa:ff:07:0a]
+
+RSSI: -81 [da:ee:aa:ff:12:4c]
+
+RSSI: -72 [da:ee:aa:ff:06:4b]
+
+RSSI: -71 [da:ee:aa:ff:06:5b]
+
+RSSI: -79 [da:ee:aa:ff:12:4c]
+
+RSSI: -36 [da:ee:aa:ff:07:2a]
+
+RSSI: -71 [da:ee:aa:ff:06:5b]
+
+RSSI: -70 [da:ee:aa:ff:06:5b]
+
+RSSI: -38 [da:ee:aa:ff:07:2a]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -71 [da:ee:aa:ff:06:5b]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -71 [da:ee:aa:ff:06:5b]
+
+RSSI: -49 [da:ee:aa:ff:07:2a]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -71 [da:ee:aa:ff:06:5b]
+
+RSSI: -49 [da:ee:aa:ff:07:2a]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -49 [da:ee:aa:ff:07:2a]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -71 [da:ee:aa:ff:06:6b]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -70 [da:ee:aa:ff:06:6b]
+
+RSSI: -49 [da:ee:aa:ff:07:4a]
+
+RSSI: -79 [da:ee:aa:ff:12:5c]
+
+RSSI: -71 [da:ee:aa:ff:06:6b]
+
+RSSI: -49 [da:ee:aa:ff:07:4a]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -68 [da:ee:aa:ff:06:8b]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -68 [da:ee:aa:ff:06:8b]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -68 [da:ee:aa:ff:06:8b]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -50 [da:ee:aa:ff:07:5a]
+
+RSSI: -71 [da:ee:aa:ff:06:9b]
+
+RSSI: -49 [da:ee:aa:ff:07:7a]
+
+RSSI: -72 [da:ee:aa:ff:06:9b]
+
+RSSI: -50 [da:ee:aa:ff:07:7a]
+
+RSSI: -49 [da:ee:aa:ff:07:7a]
+
+RSSI: -71 [da:ee:aa:ff:06:ab]
+
+RSSI: -49 [da:ee:aa:ff:07:7a]
+
+RSSI: -70 [da:ee:aa:ff:06:ab]
+
+RSSI: -62 [da:ee:aa:ff:06:ab]
+
+RSSI: -67 [da:ee:aa:ff:06:ab]
+
+RSSI: -54 [da:ee:aa:ff:06:ab]
+
+RSSI: -54 [da:ee:aa:ff:06:ab]
+
+RSSI: -49 [da:ee:aa:ff:07:9a]
+
+RSSI: -60 [da:ee:aa:ff:06:ab]
+
+RSSI: -79 [da:ee:aa:ff:12:cc]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -54 [da:ee:aa:ff:06:bb]
+
+RSSI: -79 [da:ee:aa:ff:12:cc]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -56 [da:ee:aa:ff:06:bb]
+
+RSSI: -79 [da:ee:aa:ff:12:cc]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -70 [da:ee:aa:ff:06:bb]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -70 [da:ee:aa:ff:06:bb]
+
+RSSI: -79 [da:ee:aa:ff:12:dc]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -70 [da:ee:aa:ff:06:bb]
+
+RSSI: -79 [da:ee:aa:ff:12:dc]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -70 [da:ee:aa:ff:06:cb]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -69 [da:ee:aa:ff:06:cb]
+
+RSSI: -48 [da:ee:aa:ff:07:aa]
+
+RSSI: -70 [da:ee:aa:ff:06:cb]
+
+RSSI: -48 [da:ee:aa:ff:07:ca]
+
+RSSI: -49 [da:ee:aa:ff:07:ca]
+
+RSSI: -50 [da:ee:aa:ff:07:ca]
+
+RSSI: -80 [da:ee:aa:ff:12:ec]
+
+RSSI: -50 [da:ee:aa:ff:07:ca]
+
+RSSI: -82 [da:ee:aa:ff:12:ec]
+
+RSSI: -68 [da:ee:aa:ff:06:db]
+
+RSSI: -81 [da:ee:aa:ff:12:ec]
+
+RSSI: -82 [da:ee:aa:ff:12:ec]
+
+RSSI: -81 [da:ee:aa:ff:12:ec]
+
+RSSI: -50 [da:ee:aa:ff:07:da]
+
+RSSI: -81 [da:ee:aa:ff:12:fc]
+
+RSSI: -50 [da:ee:aa:ff:07:da]
+
+RSSI: -49 [da:ee:aa:ff:07:ea]
+
+RSSI: -80 [da:ee:aa:ff:12:fc]
+
+RSSI: -71 [da:ee:aa:ff:06:eb]
+
+RSSI: -50 [da:ee:aa:ff:07:ea]
+
+RSSI: -81 [da:ee:aa:ff:12:fc]
+
+RSSI: -71 [da:ee:aa:ff:06:eb]
+
+RSSI: -49 [da:ee:aa:ff:07:ea]
+
+RSSI: -80 [da:ee:aa:ff:13:1c]
+
+RSSI: -50 [da:ee:aa:ff:07:ea]
+
+RSSI: -71 [da:ee:aa:ff:06:fb]
+
+RSSI: -50 [da:ee:aa:ff:07:ea]
+
+RSSI: -71 [da:ee:aa:ff:06:fb]
+
+RSSI: -49 [da:ee:aa:ff:07:ea]
+
+RSSI: -71 [da:ee:aa:ff:06:fb]
+
+RSSI: -81 [da:ee:aa:ff:13:1c]
+
+RSSI: -72 [da:ee:aa:ff:06:fb]
+
+RSSI: -81 [da:ee:aa:ff:13:1c]
+
+RSSI: -50 [da:ee:aa:ff:08:0a]
+
+RSSI: -72 [da:ee:aa:ff:06:fb]
+
+RSSI: -81 [da:ee:aa:ff:13:1c]
+
+RSSI: -79 [da:ee:aa:ff:13:2c]
+
+RSSI: -70 [da:ee:aa:ff:07:1b]
+
+RSSI: -79 [da:ee:aa:ff:13:2c]
+
+RSSI: -36 [da:ee:aa:ff:08:1a]
+
+RSSI: -71 [da:ee:aa:ff:07:1b]
+
+RSSI: -79 [da:ee:aa:ff:13:2c]
+
+RSSI: -71 [da:ee:aa:ff:07:1b]
+
+RSSI: -78 [da:ee:aa:ff:13:2c]
+
+RSSI: -71 [da:ee:aa:ff:07:1b]
+
+RSSI: -79 [da:ee:aa:ff:13:2c]
+
+RSSI: -36 [da:ee:aa:ff:08:1a]
+
+RSSI: -70 [da:ee:aa:ff:07:1b]
+
+RSSI: -78 [da:ee:aa:ff:13:2c]
+
+RSSI: -41 [da:ee:aa:ff:08:1a]
+
+RSSI: -48 [da:ee:aa:ff:08:1a]
+
+RSSI: -49 [da:ee:aa:ff:08:3a]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -50 [da:ee:aa:ff:08:3a]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -50 [da:ee:aa:ff:08:3a]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -50 [da:ee:aa:ff:08:4a]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -50 [da:ee:aa:ff:08:4a]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -68 [da:ee:aa:ff:07:3b]
+
+RSSI: -50 [da:ee:aa:ff:08:4a]
+
+RSSI: -81 [da:ee:aa:ff:13:5c]
+
+RSSI: -50 [da:ee:aa:ff:08:4a]
+
+RSSI: -50 [da:ee:aa:ff:08:4a]
+
+RSSI: -50 [da:ee:aa:ff:08:5a]
+
+RSSI: -72 [da:ee:aa:ff:07:4b]
+
+RSSI: -49 [da:ee:aa:ff:08:5a]
+
+RSSI: -71 [da:ee:aa:ff:07:4b]
+
+RSSI: -50 [da:ee:aa:ff:08:5a]
+
+RSSI: -50 [da:ee:aa:ff:08:5a]
+
+RSSI: -71 [da:ee:aa:ff:07:5b]
+
+RSSI: -49 [da:ee:aa:ff:08:5a]
+
+RSSI: -72 [da:ee:aa:ff:07:5b]
+
+RSSI: -81 [da:ee:aa:ff:13:8c]
+
+RSSI: -71 [da:ee:aa:ff:07:5b]
+
+RSSI: -50 [da:ee:aa:ff:08:5a]
+
+RSSI: -71 [da:ee:aa:ff:07:5b]
+
+RSSI: -69 [da:ee:aa:ff:13:8c]
+
+RSSI: -71 [da:ee:aa:ff:07:5b]
+
+RSSI: -50 [da:ee:aa:ff:08:6a]
+
+RSSI: -79 [da:ee:aa:ff:13:8c]
+
+RSSI: -50 [da:ee:aa:ff:08:6a]
+
+RSSI: -79 [da:ee:aa:ff:13:9c]
+
+RSSI: -49 [da:ee:aa:ff:08:6a]
+
+RSSI: -54 [da:ee:aa:ff:0ÿ

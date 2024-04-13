@@ -14,17 +14,15 @@ class Array:
         ant_vector = np.array([0,0.1])
         ant_rot = array_separation
 
-        self.ant_right = Antenna(type3, self.position - ant_vector, self.rotation + (2*np.pi - ant_rot), 30, 'AR') # 20 cm to right and roated 15 degrees clockwise
-        self.ant_middle = Antenna(type2, self.position, self.rotation, 30, 'AM') # Position and rotation of Array
-        self.ant_left = Antenna(type1, self.position + ant_vector, self.rotation + ant_rot, 30, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
+        self.ant_right = Antenna(type3, self.position - ant_vector, self.rotation + (2*np.pi - ant_rot), 10, 'AR') # 20 cm to right and roated 15 degrees clockwise
+        self.ant_middle = Antenna(type2, self.position, self.rotation, 10, 'AM') # Position and rotation of Array
+        self.ant_left = Antenna(type1, self.position + ant_vector, self.rotation + ant_rot, 10, 'AL') # 20 cm to left and roated 15 degrees counter-clockwise
 
         self.ant_lookup = {'AL' : self.ant_left, 'AM' : self.ant_middle, 'AR' : self.ant_right}
         
-        '''
         self.AL_AM_model = self.create_mono_model("AL","AM")
         self.AL_AR_model = self.create_mono_model("AL","AR")
         self.AM_AR_model = self.create_mono_model("AM","AR")
-        '''
 
     
     def get_gain(self, theta) -> np.ndarray:
