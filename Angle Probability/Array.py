@@ -37,6 +37,13 @@ class Array:
         self.ant_left.set_separation(separation)
         self.ant_right.set_separation(-separation)
         
+    def rotate_by(self, angle):
+        
+        self.rotation += angle
+        self.ant_left.rotate_by(angle)
+        self.ant_middle.rotate_by(angle)
+        self.ant_right.rotate_by(angle)
+        
     ######### Ideal Mono Pulse Function ####
 
     def ideal_from_ID(self, antA_ID, antB_ID, theta):
@@ -118,5 +125,18 @@ class Array:
         ax.plot(theta,AL_AM_mono, label="AL - AM")
         ax.plot(theta,AL_AR_mono, label="AL - AR")
         ax.plot(theta,AM_AR_mono, label="AM - AR")
+        ax.legend()
+        
+    def plot_3d(self, low, high, ax=None):
+        if ax is None:
+            ax = plt.figure().add_subplot(projection='3d')
+            
+        angles = np.linspace(low,high,2000)
+        g = self.get_gain(angles)
+        ax.plot(g[:,0],g[:,1],g[:,2])
+        ax.set_xlabel("l")
+        ax.set_ylabel("m")
+        ax.set_zlabel("Right")
+        
         ax.legend()
         

@@ -52,7 +52,7 @@ class Evaluation:
         self.ant_sep_angles = np.linspace(sep_low,sep_high,ant_steps)
         self.rec_angle_error = np.zeros(self.iterations)
         
-        self.model = model
+        self.model = Model(0,100,0,ant_types=("wide","narrow","wide"),eval_iterations=self.iterations)
         self.i = 0
     
 
@@ -145,6 +145,47 @@ class Evaluation:
             self.model.polar_plot(ax2)
             ax1.set_title(self.ant_sep_angles[self.i])
             self.i += 1
+            return mplfig_to_npimage(fig)
+
+        Nframes = (np.shape(self.ant_sep_angles)[0]) / 4
+        animation = VideoClip(make_frame, duration = Nframes)
+        
+        if filename is not None:
+            animation.write_videofile(filename,fps=4,codec='mpeg4',bitrate='3000k')
+        else:
+            return animation.ipython_display(fps = 4, loop = False, autoplay = True)
+        
+    def make_flight_movie(self,filename=None):
+        """
+        Generates a video saved in 'filename'.
+        """
+        from moviepy.editor import VideoClip
+        from moviepy.video.io.bindings import mplfig_to_npimage
+        import matplotlib.pyplot as plt
+        fig,ax1  = plt.subplots()
+        ax1.set_ylim(-100,500)
+        ax1.set_xlim(0,800)
+        l, b, h, w = .6, .75, .3, .3
+        ax2 = fig.add_axes([l,b,h,w], projection="polar")
+        
+        rot_per_second = 1
+        
+        angles = np.linspace(-np.pi,np.pi,400)
+        distances = np.linspace(100,800,400)
+        
+
+        def make_frame(t):
+            angle = angles[self.i]
+            dist = distances[self.i]
+            self.model.set_rec_dist(dist)
+            self.model.set_reciver_angle(angle)
+            self.model.rotate_array_by(rot_per_second * 0.1)
+            
+            ax2.clear()
+            self.model.polar_plot(ax2)
+            self.model.spatial_plot(ax1)
+            self.i += 1
+            lt = t
             return mplfig_to_npimage(fig)
 
         Nframes = (np.shape(self.ant_sep_angles)[0]) / 4

@@ -47,6 +47,9 @@ class Antenna:
     
     def set_separation(self, separation):
         self.rotation = separation
+        
+    def rotate_by(self,angle):
+        self.rotation += angle
     
     #change to positive angle from if where the antenna is pointing is the origin
 
@@ -125,3 +128,4 @@ class Antenna:
 
     def spatial_plot(self, ax, col):
         ax.plot(self.position[0],self.position[1],'x'+col)
+        
