@@ -20,10 +20,17 @@ class Antenna:
         theta = np.mod(theta, np.pi*2)
         if self.type == "narrow":
             theta_sides = np.logical_and(theta > np.pi/16, theta < 31*np.pi/16)
+            theta_sides_l = np.logical_and(theta > np.pi/16, theta <= np.pi)
+            theta_sides_r = np.logical_and(theta >= np.pi, theta < 31*np.pi/16)
+            
             main = np.logical_not(theta_sides)
             gain = np.zeros(theta.shape)
             
-            gain[theta_sides] = self.side_lobe_function(theta[theta_sides])
+            gain[theta_sides_l] = self.side_lobe_function(theta[theta_sides_l])
+            
+            mirror_vals = theta[theta_sides_r] - np.pi
+            
+            gain[theta_sides_r] = self.side_lobe_function(np.pi - mirror_vals)
             gain[main] = self.main_lobe_approx_narrow(theta[main])
             
             return gain + self.gain

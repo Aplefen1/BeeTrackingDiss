@@ -59,6 +59,7 @@ class Model:
         distance = np.random.uniform(low=dlow,high=dhigh)
         x = distance * np.cos(angle)
         y = distance * np.sin(angle)
+        self.receiver_angle = angle
         
         self.receiver.set_pos([x,y])
         
@@ -77,8 +78,10 @@ class Model:
         
         maxima = maxima[np.argsort(probs[maxima])[::-1]]
         
+        '''
         if len(maxima) > 3:
             return self.search_ang[maxima[0:3]], probs[maxima]
+        '''
         
         return self.search_ang[maxima], probs[maxima]
         
@@ -143,7 +146,6 @@ class Model:
         Returns the probability that the angle of the reciever is chosen 
         given the vector of recieved strengths 
         '''
-        
         #PDF of angles given recieved strengths vector
         probs = self.norm_dist(recieved_strengths)
         
@@ -393,9 +395,10 @@ class Model:
         array_y = self.array.position[1]
         
         for angle, prob in zip(angle_vectors, probs):
-            end_x = array_x + 300 * np.cos(angle)
-            end_y = array_y + 300 * np.sin(angle)
-            ax.plot([array_x, end_x], [array_y, end_y])#, label=np.round(prob,7))
+            if prob > 0.004:
+                end_x = array_x + 300 * np.cos(angle)
+                end_y = array_y + 300 * np.sin(angle)
+                ax.plot([array_x, end_x], [array_y, end_y], label=np.round(prob,5))
         
         ax.legend()
         
