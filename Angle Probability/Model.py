@@ -68,9 +68,11 @@ class Model:
         
     ####### Probable Vector Calculation ######################
     
-    '''Given a signal pulse, what are the 3 most likely vectors?'''
-    
     def estimate_vectors(self):
+        '''
+            Models the system then returns the angles that corresspond to the peaks of the pdf 
+            orderd from most probable to least probable.
+        '''
         signal_pulse = self.signal_pulse()
         probs = self.norm_dist(signal_pulse)
         
@@ -107,6 +109,7 @@ class Model:
         ps = norm(0,self.gauss_noise_add).pdf(d)
         #normalise
         ps /= np.sum(ps)*(self.search_ang[1]-self.search_ang[0])
+        #create discrete PDF, integral adds up to 1
         return np.multiply(ps, self.search_ang[1]-self.search_ang[0])
 
     def angle_analysis(self, p):
@@ -240,20 +243,19 @@ class Model:
         #Mode is taken to be the angle with the highest probability (for simplicity)
         self.set_reciver_angle(angle)
         recieved_signals = self.recieved_signals(self.eval_iterations)
-        mean_mode = 0
-        for sig in recieved_signals:
+        mde = []
+        for i in range(len(recieved_signals)):
+            sig = recieved_signals[i]
             probs = self.norm_dist(sig)
             max = np.argmax(probs)
-            mode_angle = self.search_ang[max]
-            mean_mode += mode_angle
+            mde.append(self.search_ang[max])
         
-        return (mean_mode/len(recieved_signals))
+        return mode(mde, keepdims=True)[0][0]
         
 
     ######## Signal modelling #########
     
-    '''Group of methods and utilities that model the signal through space,
-    taking into account Free space path loss, noise and loosing signals'''
+    '''Group of methods and utilities that e, noise and loosing signals'''
 
     def signal_pulse(self, noise=True):
         '''Models a single pulse from the antenna array to the receiver

@@ -1,7 +1,6 @@
 from Model import Model
 import numpy as np
 import matplotlib.pyplot as plt
-from numba import jit, cuda
 
 class Evaluation:
     def __init__(self, model, sep_low, sep_high, ant_steps, rec_low_ang, rec_high_ang, rec_steps, iterations, test_type) -> None:
@@ -82,7 +81,7 @@ class Evaluation:
         '''
         
         ax.plot(self.rec_test_angles,MAE)
-        ax.set_ylabel("mode MAE")
+        ax.set_ylabel("MAE (rad)")
         ax.set_xlabel("Angle")
         
     def eval_prob(self, ax : plt.Axes):
@@ -107,8 +106,15 @@ class Evaluation:
         ax.legend()
         
     def eval_mode(self, ax : plt.axes):
-        mode = self.model.mode_vectorised(self.rec_test_angles)
-        abs_difference = np.abs(np.subtract(self.rec_test_angles,mode))
+
+        modes = []
+        for i in range(len(self.rec_test_angles)):
+            ang = self.rec_test_angles[i]
+            mode = self.model.mode_angle(ang)
+            modes.append(mode)
+
+
+        abs_difference = self.rec_test_angles - modes
         
         ax.plot(self.rec_test_angles,abs_difference)
         ax.set_ylabel("abs (actual-mode)")
