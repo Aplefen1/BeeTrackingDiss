@@ -367,21 +367,28 @@ class Model:
     ##########################
     
     def test_at_100(self):
-        search_ang = np.linspace(-np.pi/4,np.pi/4,100)
+        search_ang = np.linspace(-np.pi,np.pi,100)
         pulses = np.ndarray((len(search_ang),3))
         figa = plt.figure()
         a = plt.subplot()
+        a.set_box_aspect(1)
         a.set_ylim(-150,150)
         a.set_xlim(-150,150)
+        a.set_ylabel("y pos")
+        a.set_xlabel("x pos")
+        a.set_title("Bee's path")
         
         for i in range(len(search_ang)):
             self.set_reciver_angle(search_ang[i])
             self.receiver.plot_spatial(a)
-            pulse = self.signal_pulse(False)
+            pulse = self.signal_pulse(True)
             pulses[i] = pulse
             
         figb = plt.figure()
         b = plt.subplot()
+        b.set_title("Simulated at 100m")
+        b.set_xlabel("Angle (Rad)")
+        b.set_ylabel("Recieved Signal Strength Indicator (RSSI)")
         
         b.plot(np.rad2deg(search_ang), pulses)
         
@@ -396,12 +403,13 @@ class Model:
         array_x = self.array.position[0]
         array_y = self.array.position[1]
         
+
         for angle, prob in zip(angle_vectors, probs):
             if prob > 0.004:
                 end_x = array_x + 300 * np.cos(angle)
                 end_y = array_y + 300 * np.sin(angle)
                 ax.plot([array_x, end_x], [array_y, end_y], label=np.round(prob,5))
-        
+
         ax.legend()
         
     def polar_plot(self,ax=None,legend=False):

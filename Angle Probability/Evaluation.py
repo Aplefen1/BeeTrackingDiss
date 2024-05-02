@@ -51,7 +51,7 @@ class Evaluation:
         self.ant_sep_angles = np.linspace(sep_low,sep_high,ant_steps)
         self.rec_angle_error = np.zeros(self.iterations)
         
-        self.model = Model(0,100,0,ant_types=("wide","narrow","wide"),eval_iterations=self.iterations)
+        self.model = model #Model(0,100,0,ant_types=("wide","narrow","wide"),eval_iterations=self.iterations)
         self.i = 0
     
 
@@ -83,6 +83,7 @@ class Evaluation:
         ax.plot(self.rec_test_angles,MAE)
         ax.set_ylabel("MAE (rad)")
         ax.set_xlabel("Angle")
+        return np.trapz(MAE,self.rec_test_angles)
         
     def eval_prob(self, ax : plt.Axes):
         stat_out = np.ndarray((len(self.rec_test_angles),5))

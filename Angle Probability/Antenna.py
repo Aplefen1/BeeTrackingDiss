@@ -131,8 +131,8 @@ class Antenna:
         #theta2 = np.mod(theta-self.rotation, (2*np.pi))
         gain = self.get_gain(theta)
         
-        ax.plot(theta,gain, col, label=self.id)
+        ax.plot(theta,gain, col, label="Approximation")
 
-    def spatial_plot(self, ax, col):
+    def spatial_plot(self, ax, col,l):
         ax.plot(self.position[0],self.position[1],'x'+col)
         

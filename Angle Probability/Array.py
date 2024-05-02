@@ -83,9 +83,9 @@ class Array:
    
     def spatial_plot(self, ax):
         
-        self.ant_left.spatial_plot(ax,'b')
-        self.ant_middle.spatial_plot(ax,'g')
-        self.ant_right.spatial_plot(ax,'r')
+        self.ant_left.spatial_plot(ax,'b','AL')
+        self.ant_middle.spatial_plot(ax,'g','AM')
+        self.ant_right.spatial_plot(ax,'r','AR')
      
     def plot_against(self):
         thetas = np.linspace(-np.pi/2,np.pi/2,1000)
